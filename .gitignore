@@ -1,0 +1,12 @@
+_*
+*.ppm
+*.png
+data/
+include/
+lib/
+res/
+.vscode/
+dl/
+opencv/build*
+dlib/
+build*/

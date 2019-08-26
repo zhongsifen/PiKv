@@ -1,0 +1,85 @@
+# File name: PiMien.kv
+#:kivy 1.7.0
+
+<ToolButton@Button>:
+    size_hint: None,None
+    size: 80,80
+
+<ToolImage@Image>:
+    size_hint: None,None
+    size: 64,64
+    center_x: self.parent.center_x
+    center_y: self.parent.center_y
+
+<PiMien>:
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+        GridLayout:
+            id: _toolbox
+            size_hint: None,None
+            width: 50
+            cols: 1
+            padding: 2
+            ToolButton:
+                on_press: root.PiPlay(*args)
+                ToolImage:
+                    source: 'Play.png'
+            ToolButton:
+                on_press: root.PiPause(*args)
+                ToolImage:
+                    source: 'Pause.png'
+            ToolButton:
+                on_press: root.PiRefresh(*args)
+                ToolImage:
+                    source: 'Stop.png'
+    AnchorLayout:
+        anchor_x: 'right'
+        anchor_y: 'top'
+
+        GridLayout:
+            cols: 2
+            size_hint: None,None
+            width: root.width - _toolbox.width
+            height: root.height - _menubar.height - _statusbar.height
+            PiCam:
+                id: _camera
+                resolution: (640,450)
+                play: True
+            PiMon:
+                id: _monitor
+                resolution: (640,450)
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        BoxLayout:
+            id: _bar
+            orientation: 'vertical'
+            BoxLayout:
+                id: _menubar
+                size_hint: 1,None
+                height: 48
+                orientation: 'horizontal'
+                padding: 2
+                Button:
+                    text: 'Start'
+                    on_press: root.PiStart(*args)
+                Button:
+                    text: 'Stop'
+                    on_press: root.PiPause(*args)
+                Button:
+                    text: 'Capture'
+                Button:
+                    text: 'Setup'
+                Button:
+                    text: 'Exit'
+                    on_press: app.stop()
+            BoxLayout:
+                id: _statusbar
+                size_hint: 1,None
+                height: 24
+                orientation: 'horizontal'
+                Label:
+                    text: 'Total: 1'
+                Label:
+                    text: "Started"
