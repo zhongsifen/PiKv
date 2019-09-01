@@ -1,7 +1,7 @@
-// _PiDl.cpp
+// PiDl.cpp
 
 #include "_PiDl.hpp"
-#include "dlib_cv.hpp"
+#include "PiCim/PiCim.hpp"
 
 namespace PiDl
 {
@@ -27,7 +27,6 @@ _stage;
 
 } // namespace PiDl
 
-#if 0
 bool PiDl::setup()
 {
     bool ret = true;
@@ -35,18 +34,18 @@ bool PiDl::setup()
 
     return true;
 }
-
-bool PiDl::runFace(PiCim::Cim &frame, PiCV::Face &face)
+bool PiDl::runFace(PiCim::Cim &cim, PiCim::Cface &cface)
 {
     bool ret = true;
-    tdl(frame, _image);
+    tdl(cim, _image);
     ret = dlGray(_image, _gray_dl);  if (!ret) return false;
     ret = dlFace(_gray_dl, _face_dl);   if (!ret) return false;
-    fdl(_face_dl, face);
+    fdl(_face_dl, cface);
 
     return true;
 }
 
+#if 0
 bool PiDl::runLandmark(PiCim::Cim &frame, PiCV::Landmark &landmark)
 {
     bool ret = true;
@@ -182,24 +181,11 @@ bool PiDl::dlDesc(Chip &chip, Desc &desc)
 }
 
 #if 0
-void PiDl::fdl(Image &image_dl, PiCim::Cim &image)
-{
-    cv::Mat image_r(num_rows(image_dl), num_columns(image_dl), CV_8UC3, image_data(image_dl), width_step(image_dl));
-    cv::cvtColor(image_r, image, cv::COLOR_RGB2BGR);
-}
 
 void PiDl::fdl(Gray &gray_dl, PiCV::Gray &gray)
 {
     cv::Mat gray_r(num_rows(gray_dl), num_columns(gray_dl), CV_8UC3, image_data(gray_dl), width_step(gray_dl));
     gray = gray_r.clone();
-}
-
-void PiDl::fdl(Face &face_dl, PiCV::Face &face)
-{
-    face.x = (int)face_dl.left();
-    face.y = (int)face_dl.top();
-    face.width = (int)(face_dl.right() - face_dl.left() + 1);
-    face.height = (int)(face_dl.bottom() - face_dl.top() + 1);
 }
 
 void PiDl::fdl(Shape &shape_dl, PiCV::Landmark &landmark)
@@ -228,16 +214,40 @@ void PiDl::fdl(Feat &feat_dl, PiCV::Feat &feat)
     fdl(feat_dl.chip, feat.chip);
     fdl(feat_dl.desc, feat.desc);
 }
-
-void PiDl::tdl(PiCim::Cim &image, Image &image_dl)
-{
-    dlib::cv_image<dlib::bgr_pixel> imagecv_dl(image);
-    dlib::assign_image(image_dl, imagecv_dl);
-}
-
-void PiDl::tdl(PiCV::Gray &gray, Gray &gray_dl)
-{
-    dlib::cv_image<dlib::bgr_pixel> graycv_dl(gray);
-    dlib::assign_image(gray_dl, graycv_dl);
-}
 #endif
+
+void PiDl::fdl(Image &image, PiCim::Cim &cim)
+{
+    cim.size[0] = image.nc();
+    cim.size[1] = image.nr();
+    uint8_t *p = (uint8_t *)&image(0, 0);
+    int n = cim.size[0] * cim.size[1] * 3;
+    for (int k = 0; k < n; k++)
+    {
+        cim.pixels[k] = p[k];
+    }
+}
+
+void PiDl::tdl(PiCim::Cim &cim, Image &image)
+{
+    image = Image(cim.size[1], cim.size[0]);
+    uint8_t* p = (uint8_t*)&image(0, 0);
+    int n = cim.size[0]*cim.size[1]*3;
+    for (int k=0; k<n; k++) {
+        p[k] = cim.pixels[k];
+    }
+}
+
+// void PiDl::tdl(PiCV::Gray &gray, Gray &gray_dl)
+// {
+//     dlib::cv_image<dlib::bgr_pixel> graycv_dl(gray);
+//     dlib::assign_image(gray_dl, graycv_dl);
+// }
+
+void PiDl::fdl(Face &face, PiCim::Cface &cface)
+{
+    cface.rect[0] = (int)face.left();
+    cface.rect[1] = (int)face.top();
+    cface.rect[2] = (int)face.right();
+    cface.rect[3] = (int)face.bottom();
+}

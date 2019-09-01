@@ -34,26 +34,26 @@ namespace PiDl {
 
 	// void fdl(Image & image_d, PiCim::Cim & image);
 	// void fdl(Gray &gray_d, PiCV::Gray &gray);
-	// void fdl(Face &face_dl, PiCV::Face &face);
 	// void fdl(Shape &shape_dl, PiCV::Landmark &landmark);
 	// void fdl(Desc &desc_dl, PiCV::Desc &desc);
 	
 	// void fdl(Feat &feat_dl, PiCV::Feat &feat);
 
-	// void tdl(PiCim::Cim &image, Image &image_d);
+	void fdl(Image &image, PiCim::Cim &cim);
+	void tdl(PiCim::Cim &cim, Image &image);
 	// void tdl(PiCV::Gray &gray, Gray &gray_d);
+	void fdl(Face &face, PiCim::Cface &cface);
 
-
-	// extern "C"
-	// {
-		// bool setup();
-		// bool runFace(PiCim::Cim &frame, PiCV::Face &face);
-		// bool runLandmark(PiCim::Cim &frame, PiCV::Landmark &landmark);
-		// bool runChip(PiCim::Cim &frame, PiCV::Chip &chip);
-		// bool runDesc(PiCim::Cim &frame, PiCV::Desc &desc);
+	extern "C"
+	{
+		bool setup();
+		bool runFace(PiCim::Cim &cim, PiCim::Cface &cface);
+		// bool runLandmark(PiCim::Cim &frame, PiDl::Landmark &landmark);
+		// bool runChip(PiCim::Cim &frame, PiDl::Chip &chip);
+		// bool runDesc(PiCim::Cim &frame, PiDl::Desc &desc);
 
 		// bool runFeat(void* image, void* feat);
-	// }
+	}
 }; // namespace PiDl
 
 #endif /* PiDl_hpp */
