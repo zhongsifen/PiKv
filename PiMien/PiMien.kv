@@ -67,10 +67,11 @@
                 Button:
                     text: 'Stop'
                     on_press: root.PiPause(*args)
-                Button:
-                    text: 'Capture'
+                # Button:
+                #     text: 'Capture'
                 Button:
                     text: 'Setup'
+                    on_press: root.PiSetup(*args)
                 Button:
                     text: 'Exit'
                     on_press: app.stop()

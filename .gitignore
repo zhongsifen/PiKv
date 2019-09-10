@@ -1,6 +1,7 @@
 _*
 *.ppm
 *.png
+*.jpg
 data/
 include/
 lib/

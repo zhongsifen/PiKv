@@ -16,6 +16,7 @@ from kivy.config import Config
 Config.set('graphics', 'width',  '960')
 Config.set('graphics', 'height', '960')
 
+_img = None
 
 class PiCam(Camera):
     def img(self):
@@ -32,8 +33,11 @@ class PiMon(Monitor):
 
 class PiMien(AnchorLayout):
     def PiStart(self, instance):
-        self.ids._monitor.setup(self.ids._camera.resolution)
+        self.ids._monitor.start()
     
+    def PiSetup(self, instance):
+        self.ids._monitor.setup(self.ids._camera.resolution)
+
     def PiPlay(self, instance):
         self.ids._camera.play = True
 

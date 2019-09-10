@@ -19,8 +19,8 @@ namespace PiCim {
         int32_t rect[4];
     } Cface;
 
-    bool f_rgb(void* im, int32_t *size_0, int32_t *size_1, uint8_t *pixels);
-    bool t_rgb(void *im, int32_t *size_0, int32_t *size_1, uint8_t *pixels);
+    extern "C" bool f_rgb(void *im, int32_t *size_0, int32_t *size_1, uint8_t *pixels);
+    extern "C" bool t_rgb(void *im, int32_t *size_0, int32_t *size_1, uint8_t *pixels);
 }
 
 #endif
