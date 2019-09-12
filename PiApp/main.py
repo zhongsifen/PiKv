@@ -13,8 +13,6 @@ if __name__ == "__main__":
     im = PyIm.Image()
     im= PyIm.open("z2.png")
     s, d = PiPim.t(im)
-    # size = im.size
-    # data = im.getdata()
     im.show()
     print("Hello")
     print(s)

@@ -1,5 +1,4 @@
 # File name: PiMien.py
-from PIL import Image as PILImage
 
 import kivy
 kivy.require('1.7.0')
