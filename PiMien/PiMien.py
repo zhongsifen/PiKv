@@ -37,11 +37,13 @@ class PiMien(AnchorLayout):
     def PiSetup(self, instance):
         self.ids._monitor.setup(self.ids._camera.resolution)
 
-    def PiPlay(self, instance):
-        self.ids._camera.play = True
-
-    def PiPause(self, instance):
-        self.ids._camera.play = False
+    def PiPause(self, button):
+        if button.state == "down":
+            self.ids._camera.play = False
+            button.text = 'Play'
+        else:
+            self.ids._camera.play = True
+            button.text = 'Pause'
 
     def PiStop(self, instance):
         self.ids._camera.stop()
@@ -52,6 +54,13 @@ class PiMien(AnchorLayout):
         # processing
         #
         self.ids._monitor.mon(img)
+
+    def play_normal(self, instance):
+        print("play_normal")
+
+    def play_down(self, instance):
+        print("play_down")
+    
 
 class PiMienApp(App):
     def build(self):

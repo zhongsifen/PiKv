@@ -61,14 +61,13 @@
                 height: 48
                 orientation: 'horizontal'
                 padding: 2
+                ToggleButton:
+                    text: 'Pause'
+                    on_press:
+                        root.PiPause(self)
                 Button:
                     text: 'Start'
                     on_press: root.PiStart(*args)
-                Button:
-                    text: 'Stop'
-                    on_press: root.PiPause(*args)
-                # Button:
-                #     text: 'Capture'
                 Button:
                     text: 'Setup'
                     on_press: root.PiSetup(*args)
