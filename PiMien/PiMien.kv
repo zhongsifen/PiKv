@@ -22,7 +22,7 @@
             cols: 1
             padding: 2
             ToolButton:
-                on_press: root.PiPlay(*args)
+                on_press: root.PiStart(*args)
                 ToolImage:
                     source: 'Play.png'
             ToolButton:
@@ -63,11 +63,7 @@
                 padding: 2
                 ToggleButton:
                     text: 'Pause'
-                    on_press:
-                        root.PiPause(self)
-                Button:
-                    text: 'Start'
-                    on_press: root.PiStart(*args)
+                    on_press: root.PiPause(self)
                 Button:
                     text: 'Setup'
                     on_press: root.PiSetup(*args)

@@ -9,18 +9,23 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image as Monitor
 from kivy.uix.camera import Camera
 from kivy.graphics.texture import Texture
-from PIL import Image as Img
-
+from kivy.clock import Clock
 from kivy.config import Config
 Config.set('graphics', 'width',  '960')
 Config.set('graphics', 'height', '960')
 
-_img = None
+from PIL import Image as Img
+
 
 class PiCam(Camera):
+    _img = None
+
+    def get_img(self):
+        return self._img
+
     def img(self):
-        _img = Img.frombytes(mode='RGBA', size=self.texture.size, data=self.texture.pixels)
-        return _img
+        self._img = Img.frombytes(mode='RGBA', size=self.texture.size, data=self.texture.pixels)
+        return self._img
 
 class PiMon(Monitor):
     def setup(self, size):
@@ -31,11 +36,16 @@ class PiMon(Monitor):
         self.texture.blit_buffer(pbuffer=img.tobytes(), size=img.size, colorfmt='rgba', bufferfmt='ubyte')
 
 class PiMien(AnchorLayout):
+    def PiRun(self, dt):
+        img = self._cam.img()
+        self._mon.mon(img)
+
     def PiStart(self, instance):
-        self.ids._monitor.start()
-    
-    def PiSetup(self, instance):
-        self.ids._monitor.setup(self.ids._camera.resolution)
+        self._dt = 1.0 / 25
+        self._cam = self.ids._camera
+        self._mon = self.ids._monitor
+        self._mon.setup(self._cam.resolution)
+        Clock.schedule_interval(self.PiRun, self._dt)
 
     def PiPause(self, button):
         if button.state == "down":
@@ -45,21 +55,11 @@ class PiMien(AnchorLayout):
             self.ids._camera.play = True
             button.text = 'Pause'
 
+    def PiSetup(self, instance):
+       pass
+
     def PiStop(self, instance):
-        self.ids._camera.stop()
-
-    def PiRefresh(self, instance):
-        img = self.ids._camera.img()
-        #
-        # processing
-        #
-        self.ids._monitor.mon(img)
-
-    def play_normal(self, instance):
-        print("play_normal")
-
-    def play_down(self, instance):
-        print("play_down")
+        pass
     
 
 class PiMienApp(App):
