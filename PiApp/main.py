@@ -2,16 +2,17 @@
 
 import sys
 sys.path.append('/Users/zhongsifen/Work/PiKv')
-import PiCim
-from PIL import Image as PyIm
+from PiCim import PiCim
+from PIL import Image as PyImage
 
-class PiPim(PyIm.Image):
-    def t(self):
-        return self.size, self.getdata()
+class PiPim():
+    def t(im):
+        return im.size, im.getdata()
 
 if __name__ == "__main__":
-    im = PyIm.Image()
-    im= PyIm.open("z2.png")
+    PiCim.dummy()
+
+    im = PyImage.open("z2.png")
     s, d = PiPim.t(im)
     im.show()
     print("Hello")

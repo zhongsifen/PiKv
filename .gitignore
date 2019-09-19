@@ -11,3 +11,4 @@ dl/
 opencv/build*
 dlib/
 build*/
+install*/
