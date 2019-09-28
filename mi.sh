@@ -1,1 +1,2 @@
-make -C build_m install
+cp -f build_m/*/lib*.so install/
+
