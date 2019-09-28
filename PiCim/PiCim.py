@@ -27,5 +27,5 @@ if __name__ == "__main__":
     # im.show()
     print("[main] Hello")
 
-    libPiCim.getCim(c_char_p(d), c_int32(s[0]), c_int32(s[1]))
-    libPiCim.hello()
+    libPiCim.cim_setup(c_char_p(d), c_int32(s[0]), c_int32(s[1]))
+    libPiCim.cim_run()

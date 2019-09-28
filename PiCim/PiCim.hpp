@@ -27,8 +27,14 @@ namespace PiCim {
         void hello();
         void getCim(uint8_t *pixels, int32_t size_0, int32_t size_1);
         void setCim(uint8_t *pixels, int32_t *size_0, int32_t *size_1);
-        void get_(int32_t size_0, int32_t size_1);
+        void getCim(uint8_t *pixels, int32_t size_0, int32_t size_1);
     }
+}
+
+extern "C"
+{
+    void cim_setup(uint8_t *pixels, int32_t size_0, int32_t size_1);
+    void cim_run();
 }
 
 #endif

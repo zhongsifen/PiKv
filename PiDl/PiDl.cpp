@@ -27,20 +27,20 @@ _stage;
 
 } // namespace PiDl
 
-bool PiDl::setup()
+bool dl_setup()
 {
     bool ret = true;
-    ret = dlInit();     if (!ret) return false;
+    ret = PiDl::dlInit();     if (!ret) return false;
 
     return true;
 }
-bool PiDl::runFace(PiCim::Cim &cim, PiCim::Cface &cface)
+bool dl_runFace(PiCim::Cim &cim, PiCim::Cface &cface)
 {
     bool ret = true;
-    tdl(cim, _image);
-    ret = dlGray(_image, _gray_dl);  if (!ret) return false;
-    ret = dlFace(_gray_dl, _face_dl);   if (!ret) return false;
-    fdl(_face_dl, cface);
+    PiDl::tdl(cim, PiDl::_image);
+    ret = PiDl::dlGray(PiDl::_image, PiDl::_gray_dl);      if (!ret) return false;
+    ret = PiDl::dlFace(PiDl::_gray_dl, PiDl::_face_dl);    if (!ret) return false;
+    PiDl::fdl(PiDl::_face_dl, cface);
 
     return true;
 }
@@ -49,10 +49,10 @@ bool PiDl::runFace(PiCim::Cim &cim, PiCim::Cface &cface)
 bool PiDl::runLandmark(PiCim::Cim &frame, PiCV::Landmark &landmark)
 {
     bool ret = true;
-    tdl(frame, _image);
-    ret = dlGray(_image, _gray_dl);  if (!ret) return false;
-    ret = dlFace(_gray_dl, _face_dl);   if (!ret) return false;
-    ret = dlShape(_gray_dl, _face_dl, _shape_dl); if (!ret) return false;
+    tdl(frame, PiDl::_image);
+    ret = dlGray(PiDl::_image, PiDl::_gray_dl);  if (!ret) return false;
+    ret = dlFace(PiDl::_gray_dl, PiDl::_face_dl);   if (!ret) return false;
+    ret = dlShape(PiDl::_gray_dl, PiDl::_face_dl, _shape_dl); if (!ret) return false;
     fdl(_shape_dl, landmark);
  
     return true;
@@ -61,11 +61,11 @@ bool PiDl::runLandmark(PiCim::Cim &frame, PiCV::Landmark &landmark)
 bool PiDl::runChip(PiCim::Cim &frame, PiCV::Chip &chip)
 {
     bool ret = true;
-    tdl(frame, _image);
-    ret = dlGray(_image, _gray_dl);  if (!ret) return false;
-    ret = dlFace(_gray_dl, _face_dl);   if (!ret) return false;
-    ret = dlShape(_gray_dl, _face_dl, _shape_dl); if (!ret) return false;
-    ret = dlChip(_image, _shape_dl, _chip_dl); if (!ret) return false;
+    tdl(frame, PiDl::_image);
+    ret = dlGray(PiDl::_image, PiDl::_gray_dl);  if (!ret) return false;
+    ret = dlFace(PiDl::_gray_dl, PiDl::_face_dl);   if (!ret) return false;
+    ret = dlShape(PiDl::_gray_dl, PiDl::_face_dl, _shape_dl); if (!ret) return false;
+    ret = dlChip(PiDl::_image, _shape_dl, _chip_dl); if (!ret) return false;
     fdl(_chip_dl, chip);
 
     return true;
@@ -74,18 +74,18 @@ bool PiDl::runChip(PiCim::Cim &frame, PiCV::Chip &chip)
 bool PiDl::runDesc(PiCim::Cim &frame, PiCV::Desc &desc)
 {
     bool ret = true;
-    tdl(frame, _image);
-    ret = dlGray(_image, _gray_dl);  if (!ret) return false;
-    ret = dlFace(_gray_dl, _face_dl);   if (!ret) return false;
-    ret = dlShape(_gray_dl, _face_dl, _shape_dl); if (!ret) return false;
-    ret = dlChip(_image, _shape_dl, _chip_dl); if (!ret) return false;
+    tdl(frame, PiDl::_image);
+    ret = dlGray(PiDl::_image, PiDl::_gray_dl);  if (!ret) return false;
+    ret = dlFace(PiDl::_gray_dl, PiDl::_face_dl);   if (!ret) return false;
+    ret = dlShape(PiDl::_gray_dl, PiDl::_face_dl, _shape_dl); if (!ret) return false;
+    ret = dlChip(PiDl::_image, _shape_dl, _chip_dl); if (!ret) return false;
     ret = dlDesc(_chip_dl, _desc_dl);
     fdl(_desc_dl, desc);
 
     return true;
 }
 
-bool PiDl::runFeat(void *p_image, void *p_feat)
+bool PiDl::runFeat(void *pPiDl::_image, void *p_feat)
 {
     PiCim::Cim *cv_image = (PiCim::Cim*)p_image;
     PiCV::Feat *cv_feat = (PiCV::Feat*)p_feat;
