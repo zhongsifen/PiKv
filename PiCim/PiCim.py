@@ -22,10 +22,10 @@ if __name__ == "__main__":
     # im.save("s2.png")
     s = im.texture_size
     d = im.texture.pixels
-    print("[s.png]", s[0], s[1], type(d))
+    # print("[s.png]", s[0], s[1], type(d))
     # d, s = t(im)
     # im.show()
-    print("[main] Hello")
+    print("[main] s, d", s, len(d))
 
-    libPiCim.cim_setup(c_char_p(d), c_int32(s[0]), c_int32(s[1]))
+    libPiCim.cim_setup((c_int*2)(*s))
     libPiCim.cim_run()

@@ -9,8 +9,9 @@
 namespace PiCim {
     typedef struct
     {
-        int32_t size[2];
         uint8_t *pixels;
+        int32_t size[2];
+        int32_t length;
         const char *colorfmt;
     } Cim;
 
@@ -19,21 +20,19 @@ namespace PiCim {
         int32_t rect[4];
     } Cface;
 
-    void f_rgb(void *im, uint8_t *pixels, int32_t size_0, int32_t size_1);
-    void t_rgb(void *im, uint8_t *pixels, int32_t *size_0, int32_t *size_1);
+    bool open_cim(Cim &im, int32_t size[2], uint8_t *pixels = nullptr, const char *colorfmt = "rgb");
+    bool read_cim(Cim &im, uint8_t pixels[]);
+    bool write_cim(Cim &im, uint8_t pixels[]);
+    bool close_cim(Cim &im);
 
-    extern "C"
-    {
-        void hello();
-        void getCim(uint8_t *pixels, int32_t size_0, int32_t size_1);
-        void setCim(uint8_t *pixels, int32_t *size_0, int32_t *size_1);
-        void getCim(uint8_t *pixels, int32_t size_0, int32_t size_1);
-    }
+    void f_face(void *face, int32_t rect[4]);
+    void t_face(void *face, int32_t rect[4]);
+
 }
 
 extern "C"
 {
-    void cim_setup(uint8_t *pixels, int32_t size_0, int32_t size_1);
+    void cim_size(int size[2]);
     void cim_run();
 }
 

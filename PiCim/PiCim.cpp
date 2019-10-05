@@ -4,46 +4,54 @@
 
 namespace PiCim
 {
-PiCim::Cim _cim;
+    PiCim::Cim _cim;
 }
 
-void PiCim::f_rgb(void *im, uint8_t *pixels, int32_t size_0, int32_t size_1)
+bool PiCim::open_cim(Cim &im, int size[2], uint8_t *pixels, const char *colorfmt)
 {
-    Cim *cim = (Cim *)im;
-    cim->pixels = pixels;
-    cim->size[0] = size_0;
-    cim->size[1] = size_1;
-    cim->colorfmt = "rgb";
+    im.colorfmt = colorfmt;
+    im.size[0] = size[0];
+    im.size[1] = size[1];
+    im.length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
+    im.pixels = (pixels == nullptr) ? new uint8_t[im.length] : pixels;
+
+    return true;
 }
 
-void PiCim::t_rgb(void *im, uint8_t *pixels, int32_t *size_0, int32_t *size_1)
+bool PiCim::read_cim(Cim &im, uint8_t pixels[])
 {
-    Cim *cim = (Cim *)im;
-    pixels = cim->pixels;
-    *size_0 = cim->size[0];
-    *size_1 = cim->size[1];
+    return true;
 }
 
-void PiCim::hello()
+bool PiCim::write_cim(Cim &im, uint8_t pixels[])
 {
-    printf("[PiCim] ctypes hello\n");
+    return true;
 }
 
-void PiCim::getCim(uint8_t *pixels, int32_t size_0, int32_t size_1)
+bool PiCim::close_cim(Cim &im)
 {
-    f_rgb(&_cim, pixels, size_0, size_1);
+    return true;
 }
 
-void PiCim::setCim(uint8_t *pixels, int32_t *size_0, int32_t *size_1)
+void PiCim::f_face(void *face, int rect[4])
 {
-    t_rgb(&_cim, pixels, size_0, size_1);
+
+}
+void PiCim::t_face(void *face, int rect[4])
+{
+    Cface *cface = (Cface *)face;
+    for (int i=0; i<4; i++)
+    {
+        rect[i] = cface->rect[i];
+    }
 }
 
-void cim_setup(uint8_t *pixels, int32_t size_0, int32_t size_1)
+
+void cim_size(int size[2])
 {
-    printf("cim_setup: begin (%d,%d)\n", size_0, size_1);
-    PiCim::getCim(pixels, size_0, size_1);
-    printf("cim_setup: (%d,%d)\n", PiCim::_cim.size[0], PiCim::_cim.size[1]);
+    printf("[Cim]setup: before (%d,%d)\n", size[0], size[1]);
+    PiCim::open_cim(PiCim::_cim, size);
+    printf("[Cim]setup: after (%d,%d)\n", PiCim::_cim.size[0], PiCim::_cim.size[1]);
 }
 
 void cim_run()
