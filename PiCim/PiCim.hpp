@@ -32,7 +32,11 @@ namespace PiCim {
 
 extern "C"
 {
-    void cim_size(int size[2]);
+    void cim_setup(int size[2]);
+    void cim_input_rgb(uint8_t pixels[]);
+    void cim_input_rgba(uint8_t pixels[]);
+    void cim_get_size(int size[2]);
+    void cim_get_rgb(uint8_t pixels[]);
     void cim_run();
 }
 

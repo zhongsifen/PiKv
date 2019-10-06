@@ -40,18 +40,62 @@ void PiCim::f_face(void *face, int rect[4])
 void PiCim::t_face(void *face, int rect[4])
 {
     Cface *cface = (Cface *)face;
-    for (int i=0; i<4; i++)
-    {
+    for (int i=0; i<4; i++) {
         rect[i] = cface->rect[i];
     }
 }
 
 
-void cim_size(int size[2])
+void cim_setup(int size[2])
 {
     printf("[Cim]setup: before (%d,%d)\n", size[0], size[1]);
     PiCim::open_cim(PiCim::_cim, size);
     printf("[Cim]setup: after (%d,%d)\n", PiCim::_cim.size[0], PiCim::_cim.size[1]);
+}
+
+void cim_input_rgb(uint8_t pixels[])
+{
+    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
+    uint8_t *p = PiCim::_cim.pixels;
+    int i=0, j=0;
+    for (int k=0; k<l; k++) {
+        p[i++] = pixels[j++];
+        p[i++] = pixels[j++];
+        p[i++] = pixels[j++];
+    }
+}
+
+void cim_input_rgba(uint8_t pixels[])
+{
+    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
+    uint8_t *p = PiCim::_cim.pixels;
+    int i = 0, j = 0;
+    for (int k = 0; k < l; k++)
+    {
+        p[i++] = pixels[j++];
+        p[i++] = pixels[j++];
+        p[i++] = pixels[j++];
+        j++;
+    }
+}
+
+void cim_get_size(int size[2])
+{
+    size[0] = PiCim::_cim.size[0];
+    size[1] = PiCim::_cim.size[1];
+}
+
+void cim_get_rgb(uint8_t pixels[])
+{
+    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
+    uint8_t *p = PiCim::_cim.pixels;
+    int i = 0, j = 0;
+    for (int k = 0; k < l; k++)
+    {
+        pixels[j++] = p[i++];
+        pixels[j++] = p[i++];
+        pixels[j++] = p[i++];
+    }
 }
 
 void cim_run()
