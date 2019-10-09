@@ -7,31 +7,31 @@ namespace PiCim
     PiCim::Cim _cim;
 }
 
-bool PiCim::open_cim(Cim &im, int size[2], uint8_t *pixels, const char *colorfmt)
-{
-    im.colorfmt = colorfmt;
-    im.size[0] = size[0];
-    im.size[1] = size[1];
-    im.length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
-    im.pixels = (pixels == nullptr) ? new uint8_t[im.length] : pixels;
+// bool PiCim::open_cim(Cim &im, int size[2], uint8_t *pixels, const char *colorfmt)
+// {
+//     im.colorfmt = colorfmt;
+//     im.size[0] = size[0];
+//     im.size[1] = size[1];
+//     im.length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
+//     im.pixels = (pixels == nullptr) ? new uint8_t[im.length] : pixels;
 
-    return true;
-}
+//     return true;
+// }
 
-bool PiCim::read_cim(Cim &im, uint8_t pixels[])
-{
-    return true;
-}
+// bool PiCim::read_cim(Cim &im, uint8_t pixels[])
+// {
+//     return true;
+// }
 
-bool PiCim::write_cim(Cim &im, uint8_t pixels[])
-{
-    return true;
-}
+// bool PiCim::write_cim(Cim &im, uint8_t pixels[])
+// {
+//     return true;
+// }
 
-bool PiCim::close_cim(Cim &im)
-{
-    return true;
-}
+// bool PiCim::close_cim(Cim &im)
+// {
+//     return true;
+// }
 
 void PiCim::f_face(void *face, int rect[4])
 {
@@ -46,14 +46,30 @@ void PiCim::t_face(void *face, int rect[4])
 }
 
 
-void cim_setup(int size[2])
+void cim_open(int size[2], char colorfmt[])
 {
-    printf("[Cim]setup: before (%d,%d)\n", size[0], size[1]);
-    PiCim::open_cim(PiCim::_cim, size);
-    printf("[Cim]setup: after (%d,%d)\n", PiCim::_cim.size[0], PiCim::_cim.size[1]);
+    PiCim::_cim.size[0] = size[0];
+    PiCim::_cim.size[1] = size[1];
+    PiCim::_cim.length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
+    PiCim::_cim.pixels = new uint8_t[PiCim::_cim.length];
 }
 
-void cim_input_rgb(uint8_t pixels[])
+void cim_close()
+{
+    PiCim::_cim.size[0] = 0;
+    PiCim::_cim.size[1] = 0;
+    PiCim::_cim.length = 0;
+    delete[] PiCim::_cim.pixels;
+    PiCim::_cim.pixels = nullptr;
+}
+
+void cim_size(int size[2])
+{
+    size[0] = PiCim::_cim.size[0];
+    size[1] = PiCim::_cim.size[1];
+}
+
+void cim_read_rgb(uint8_t pixels[])
 {
     int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
     uint8_t *p = PiCim::_cim.pixels;
@@ -65,7 +81,7 @@ void cim_input_rgb(uint8_t pixels[])
     }
 }
 
-void cim_input_rgba(uint8_t pixels[])
+void cim_read_rgba(uint8_t pixels[])
 {
     int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
     uint8_t *p = PiCim::_cim.pixels;
@@ -79,13 +95,7 @@ void cim_input_rgba(uint8_t pixels[])
     }
 }
 
-void cim_get_size(int size[2])
-{
-    size[0] = PiCim::_cim.size[0];
-    size[1] = PiCim::_cim.size[1];
-}
-
-void cim_get_rgb(uint8_t pixels[])
+void cim_write_rgb(uint8_t pixels[])
 {
     int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
     uint8_t *p = PiCim::_cim.pixels;

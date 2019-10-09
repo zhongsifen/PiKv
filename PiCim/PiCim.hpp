@@ -20,10 +20,10 @@ namespace PiCim {
         int32_t rect[4];
     } Cface;
 
-    bool open_cim(Cim &im, int32_t size[2], uint8_t *pixels = nullptr, const char *colorfmt = "rgb");
-    bool read_cim(Cim &im, uint8_t pixels[]);
-    bool write_cim(Cim &im, uint8_t pixels[]);
-    bool close_cim(Cim &im);
+    // bool open_cim(Cim &im, int32_t size[2], uint8_t *pixels = nullptr, const char *colorfmt = "rgb");
+    // bool read_cim(Cim &im, uint8_t pixels[]);
+    // bool write_cim(Cim &im, uint8_t pixels[]);
+    // bool close_cim(Cim &im);
 
     void f_face(void *face, int32_t rect[4]);
     void t_face(void *face, int32_t rect[4]);
@@ -32,11 +32,13 @@ namespace PiCim {
 
 extern "C"
 {
-    void cim_setup(int size[2]);
-    void cim_input_rgb(uint8_t pixels[]);
-    void cim_input_rgba(uint8_t pixels[]);
-    void cim_get_size(int size[2]);
-    void cim_get_rgb(uint8_t pixels[]);
+    void cim_open(int size[2], char colorfmt[]);
+    void cim_close();
+    void cim_size(int size[2]);
+    void cim_read_rgb(uint8_t pixels[]);
+    void cim_read_rgba(uint8_t pixels[]);
+    void cim_write_rgb(uint8_t pixels[]);
+    
     void cim_run();
 }
 
