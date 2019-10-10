@@ -1,9 +1,6 @@
 # PiCim.py
 
 import ctypes
-# from ctypes import *
-# import sys
-# sys.path.append('/Users/zhongsifen/Work/PiKv')
 import os
 libPiCim = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiCim.so")
 from PIL import Image as PyImage
@@ -36,8 +33,9 @@ class Cim:
     def write_rgb(pixels):
         libPiCim.cim_write_rgb(ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
 
+
 if __name__ == "__main__":
-    filename = "z2.png"
+    filename = "data/z2.png"
     
     im = UxImage(source=filename).texture
     Cim.open(im.size, im.colorfmt)
