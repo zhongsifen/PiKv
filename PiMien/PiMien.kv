@@ -30,9 +30,9 @@
                 ToolImage:
                     source: 'Pause.png'
             ToolButton:
-                on_press: root.PiRefresh(*args)
+                on_press: root.KvFace(*args)
                 ToolImage:
-                    source: 'Stop.png'
+                    source: 'Face.png'
     AnchorLayout:
         anchor_x: 'right'
         anchor_y: 'top'
@@ -46,8 +46,8 @@
                 id: _camera
                 resolution: (640,450)
                 play: True
-            PiMon:
-                id: _monitor
+            KvPreview:
+                id: _preview
                 resolution: (640,450)
     AnchorLayout:
         anchor_x: 'center'
