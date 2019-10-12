@@ -32,6 +32,8 @@ namespace PiCim {
 
 extern "C"
 {
+    void pic_rgba_rgb(uint8_t pixels_rgba[], uint8_t pixels_rgb[], int size[2]);
+    
     void cim_open(int size[2], char colorfmt[]);
     void cim_close();
     void cim_size(int size[2]);

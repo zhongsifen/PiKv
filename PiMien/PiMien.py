@@ -6,7 +6,6 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.image import Image as Monitor
 from kivy.uix.image import Image as Preview
 from kivy.uix.camera import Camera
 from kivy.graphics.texture import Texture
@@ -22,25 +21,10 @@ sys.path.append('/Users/zhongsifen/Work/PiKv')
 
 from PiCim.PiCim import Cim
 
-class PiCam(Camera):
-    _img = None
+class PiCam(kivy.uix.camera.Camera):
+    pass
 
-    def get_img(self):
-        return self._img
-
-    def img(self):
-        self._img = Img.frombytes(mode='RGBA', size=self.texture.size, data=self.texture.pixels)
-        return self._img
-
-# class PiMon(Monitor):
-#     def setup(self, size):
-#         self.texture = Texture.create(size=size, colorfmt='rgba', bufferfmt='ubyte')
-#         self.texture.flip_vertical()
-        
-#     def mon(self, img):
-#         self.texture.blit_buffer(pbuffer=img.tobytes(), size=img.size, colorfmt='rgba', bufferfmt='ubyte')
-
-class KvPreview(Preview):
+class KvPreview(kivy.uix.image.Image):
     def setup(self, size):
         self.texture = Texture.create(size=size, colorfmt='rgba')
         self.texture.flip_vertical()
@@ -75,21 +59,17 @@ class PiMien(AnchorLayout):
         pass
     
     def KvFace(self, instance):
-        filename = 'data/z2.png'
-        im = Preview(source=filename).texture
-        Cim.open(im.size, im.colorfmt)
-        Cim.read_rgba(im.pixels)
-        s = Cim.size()
-        d = bytes(s[0]*s[1]*3)
-        Cim.write_rgb(d)
-        prv = self.ids._preview
-        prv.setup(size=s)
-        prv.show(pixels=d, size=s, colorfmt='rgb')
+        cam = self.ids._camera.texture
+        size = cam.size
+        Cim.open(size, 'rgba')
+        Cim.read_rgba(cam.pixels)
 
-    # pim = PyImage.frombytes('RGB', s, d)
-    # pim.show()
-    # Cim.close()
-    # print(im.size)
+        pixels = bytes((size[0]*size[1])*3)
+        Cim.write_rgb(pixels)
+        prv = self.ids._preview
+        prv.setup(size=size)
+        prv.show(pixels=pixels, size=size, colorfmt='rgb')
+
 
 class PiMienApp(App):
     def build(self):

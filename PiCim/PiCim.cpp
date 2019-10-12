@@ -45,6 +45,18 @@ void PiCim::t_face(void *face, int rect[4])
     }
 }
 
+void pic_rgba_rgb(uint8_t pixels_rgba[], uint8_t pixels_rgb[], int size[2])
+{
+    int l = size[0] * size[1];
+    int i = 0, j = 0;
+    for (int k = 0; k < l; k++)
+    {
+        pixels_rgb[i++] = pixels_rgba[j++];
+        pixels_rgb[i++] = pixels_rgba[j++];
+        pixels_rgb[i++] = pixels_rgba[j++];
+        j++;
+    }
+}
 
 void cim_open(int size[2], char colorfmt[])
 {
