@@ -21,10 +21,18 @@ sys.path.append('/Users/zhongsifen/Work/PiKv')
 
 from PiCim.PiCim import Cim
 
-class PiCam(kivy.uix.camera.Camera):
-    pass
+class KvCam(Camera):
+    def size(self):
+        return self.texture.size
 
-class KvPreview(kivy.uix.image.Image):
+    def colorfmt(self):
+        return self.texture.colorfmt
+
+    def pixels(self):
+        return self.texture.pixels
+
+
+class KvPreview(Preview):
     def setup(self, size):
         self.texture = Texture.create(size=size, colorfmt='rgba')
         self.texture.flip_vertical()
@@ -59,11 +67,12 @@ class PiMien(AnchorLayout):
         pass
     
     def KvFace(self, instance):
-        cam = self.ids._camera.texture
-        size = cam.size
-        Cim.open(size, 'rgba')
-        Cim.read_rgba(cam.pixels)
+        cam = self.ids._camera
+        Cim.open(cam.size(), cam.colorfmt())
+        Cim.read_rgba(cam.pixels())
 
+        size = Cim.size()
+        print("size=", size)
         pixels = bytes((size[0]*size[1])*3)
         Cim.write_rgb(pixels)
         prv = self.ids._preview
