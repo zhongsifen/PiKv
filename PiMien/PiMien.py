@@ -22,13 +22,13 @@ sys.path.append('/Users/zhongsifen/Work/PiKv')
 from PiCim.PiCim import Cim
 
 class KvCam(Camera):
-    def size(self):
+    def get_size(self):
         return self.texture.size
 
-    def colorfmt(self):
+    def get_colorfmt(self):
         return self.texture.colorfmt
 
-    def pixels(self):
+    def get_pixels(self):
         return self.texture.pixels
 
 
@@ -42,14 +42,17 @@ class KvPreview(Preview):
 
 class PiMien(AnchorLayout):
     def PiRun(self, dt):
-        img = self._cam.img()
-        self._prv.show(pixels=img.tobytes(), size=img.size, colorfmt='rgba')
+        # img = self._cam.img()
+        # self._prv.show(pixels=img.tobytes(), size=img.size, colorfmt='rgba')
+        cam = self.ids._camera
+        self.ids._preview.show(pixels=cam.get_pixels(), size=cam.get_size(), colorfmt=cam.get_colorfmt())
 
     def PiStart(self, instance):
         self._dt = 1.0 / 25
-        self._cam = self.ids._camera
-        self._prv = self.ids._preview
-        self._prv.setup(self._cam.resolution)
+        # self._cam = self.ids._camera
+        # self._prv = self.ids._preview
+        # self._prv.setup(self._cam.resolution)
+        self.ids._preview.setup(self.ids._camera.get_size())
         Clock.schedule_interval(self.PiRun, self._dt)
 
     def PiPause(self, button):
