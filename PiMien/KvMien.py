@@ -1,4 +1,4 @@
-# File name: PiMien.py
+# File name: KvMien.py
 
 import kivy
 kivy.require('1.7.0')
@@ -40,20 +40,15 @@ class KvPreview(Preview):
     def show(self, pixels, size, colorfmt):
         self.texture.blit_buffer(pbuffer=pixels, size=size, colorfmt=colorfmt)
 
-class PiMien(AnchorLayout):
+class KvMien(AnchorLayout):
     def PiRun(self, dt):
-        # img = self._cam.img()
-        # self._prv.show(pixels=img.tobytes(), size=img.size, colorfmt='rgba')
         cam = self.ids._camera
         self.ids._preview.show(pixels=cam.get_pixels(), size=cam.get_size(), colorfmt=cam.get_colorfmt())
 
     def PiStart(self, instance):
-        self._dt = 1.0 / 25
-        # self._cam = self.ids._camera
-        # self._prv = self.ids._preview
-        # self._prv.setup(self._cam.resolution)
+        dt = 1.0 / 25.0
         self.ids._preview.setup(self.ids._camera.get_size())
-        Clock.schedule_interval(self.PiRun, self._dt)
+        Clock.schedule_interval(self.PiRun, dt)
 
     def PiPause(self, button):
         if button.state == "down":
@@ -64,18 +59,23 @@ class PiMien(AnchorLayout):
             button.text = 'Pause'
 
     def PiSetup(self, instance):
-       pass
+        pass
 
     def PiStop(self, instance):
         pass
     
     def KvFace(self, instance):
-        cam = self.ids._camera
-        Cim.open(cam.size(), cam.colorfmt())
-        Cim.read_rgba(cam.pixels())
+        dt = 1.0 / 25.0
+        self.KvFaceSetup()
+        Clock.schedule_interval(self.KvFaceRun, dt)
 
+    def KvFaceSetup(self):
+        cam = self.ids._camera
+        Cim.open(cam.get_size(), cam.get_colorfmt())
+        Cim.read_rgba(cam.get_pixels())
+
+    def KvFaceRun(self, dt):
         size = Cim.size()
-        print("size=", size)
         pixels = bytes((size[0]*size[1])*3)
         Cim.write_rgb(pixels)
         prv = self.ids._preview
@@ -83,9 +83,9 @@ class PiMien(AnchorLayout):
         prv.show(pixels=pixels, size=size, colorfmt='rgb')
 
 
-class PiMienApp(App):
+class KvMienApp(App):
     def build(self):
-        return PiMien()
+        return KvMien()
 
 if __name__=="__main__":
-    PiMienApp().run()
+    KvMienApp().run()
