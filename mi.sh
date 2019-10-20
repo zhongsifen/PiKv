@@ -1,2 +1,4 @@
-cp -f build_m/*/lib*.so install/
+mkdir -p install
+
+cp -fv build_m/*/lib*.* install/
 

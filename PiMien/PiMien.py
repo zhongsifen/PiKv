@@ -5,11 +5,12 @@ sys.path.append('/Users/zhongsifen/Work/PiKv')
 from PiCim.PiCim import Cim
 
 class PiMien:
-    def Setup(self):
-        Cim.open(cam.get_size(), cam.get_colorfmt())
-        Cim.read_rgba(cam.get_pixels())
+    def setup(self, pixels, size, colorfmt):
+        Cim.open(size, colorfmt)
+        if (colorfmt == 'rgba'):
+            Cim.read_rgba(pixels)
 
-    def Run(self):
+    def run(self):
         size = Cim.size()
         pixels = bytes((size[0]*size[1])*3)
         Cim.write_rgb(pixels)

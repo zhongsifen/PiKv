@@ -1,9 +1,9 @@
-add_library(PiCim SHARED
+add_library(PiCim
 	PiCim.cpp
 	PiCim.hpp
 )
 set_target_properties(PiCim PROPERTIES
-    SUFFIX .so
+    SUFFIX .a
 )
 
 target_include_directories(PiCim PUBLIC

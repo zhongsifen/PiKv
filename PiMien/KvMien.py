@@ -28,12 +28,12 @@ class KvCam(Camera):
 
 
 class KvPreview(Image):
-    def setup(self, size):
-        self.texture = Texture.create(size=size, colorfmt='rgba')
+    def setup(self, size, colorfmt):
+        self.texture = Texture.create(size=size, colorfmt=colorfmt)
         self.texture.flip_vertical()
     
-    def show(self, pixels, size, colorfmt):
-        self.texture.blit_buffer(pbuffer=pixels, size=size, colorfmt=colorfmt)
+    def show(self, pixels):
+        self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
 
 
 class KvMien(AnchorLayout):
@@ -41,10 +41,10 @@ class KvMien(AnchorLayout):
         self.dt=(1.0/25)
         self.cam=self.ids._camera
         self.prv=self.ids._preview
-        self.prv.setup(self.cam.get_size())
+        self.prv.setup(self.cam.get_size(), self.cam.get_colorfmt())
     
-    def run(self, parameter_list):
-        self.prv.show(pixels=self.cam.get_pixels(), size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
+    def run(self, dt):
+        self.prv.show(pixels=self.cam.get_pixels())
 
     def PiStart(self, instance):
         self.setup()

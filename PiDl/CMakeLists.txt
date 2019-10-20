@@ -4,6 +4,8 @@ add_library(PiDl SHARED
 	PiDl.hpp
 	_PiDl.hpp
 	dlib_anet.hpp
+	../PiCim/PiCim.cpp
+	../PiCim/PiCim.hpp
 )
 set_target_properties(PiDl PROPERTIES
     SUFFIX .so
@@ -16,7 +18,7 @@ target_include_directories(PiDl PUBLIC
 )
 
 target_link_libraries(PiDl LINK_PUBLIC
-	PiCim
+	# PiCim
 	${DLIB_DIR}/lib/libdlib.a
 	libblas.dylib
 	liblapack.dylib
