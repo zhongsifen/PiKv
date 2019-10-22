@@ -5,18 +5,15 @@ sys.path.append('/Users/zhongsifen/Work/PiKv')
 from PiCim.PiCim import Cim
 
 class PiMien:
-    def setup(self, pixels, size, colorfmt):
+    def setup(self, size, colorfmt):
+        self.size = size
+        self.colorfmt = colorfmt
+        self.pixels = bytes((size[0]*size[1]) * 3)
+        self.func_read = Cim.func_read(colorfmt)
         Cim.open(size, colorfmt)
-        if (colorfmt == 'rgba'):
-            Cim.read_rgba(pixels)
 
     def run(self):
-        size = Cim.size()
-        pixels = bytes((size[0]*size[1])*3)
-        Cim.write_rgb(pixels)
-        prv = self.ids._preview
-        prv.setup(size=size)
-        prv.show(pixels=pixels, size=size, colorfmt='rgb')
+        Cim.write_rgb(self.pixels)
 
     # def KvFace(self, instance):
     #     dt = 1.0 / 25.0

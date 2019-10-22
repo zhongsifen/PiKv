@@ -26,8 +26,16 @@ class Cim:
         return size
 
     @staticmethod
+    def read_rgb(pixels):
+        cdll.cim_read_rgb(ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
+
+    @staticmethod
     def read_rgba(pixels):
         cdll.cim_read_rgba(ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
+
+    @staticmethod
+    def func_read(colorfmt):
+        return Cim.read_rgba if (colorfmt == 'rgba') else Cim.read_rgb
 
     @staticmethod
     def write_rgb(pixels):
