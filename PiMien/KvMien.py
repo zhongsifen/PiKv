@@ -28,7 +28,7 @@ class KvCam(Camera):
 
 
 class KvPreview(Image):
-    def setup(self, size, colorfmt):
+    def setup(self, size, colorfmt='rgb'):
         self.texture = Texture.create(size=size, colorfmt=colorfmt)
         self.texture.flip_vertical()
     
@@ -39,13 +39,8 @@ class KvPreview(Image):
 class KvMien(AnchorLayout):
     def setup(self):
         self.dt=(1.0/25)
-
         self.cam=self.ids._camera
-        self.cam_size = self.cam.get_size()
-        self.cam_colorfmt = self.cam.get_colorfmt()
-
         self.prv=self.ids._preview
-        self.prv.setup(self.cam_size, self.cam_colorfmt)
     
     def run(self, dt):
         pixels = self.cam.get_pixels()
@@ -53,6 +48,7 @@ class KvMien(AnchorLayout):
 
     def PiStart(self, instance):
         self.setup()
+        self.prv.setup(size=self.cam.get_size(),colorfmt=self.cam.get_colorfmt())
         Clock.schedule_interval(self.run, self.dt)
 
     def PiPause(self, button):
@@ -69,10 +65,20 @@ class KvMien(AnchorLayout):
     def PiStop(self, instance):
         pass
 
-    def KvFace(self, instance):
-        mien = PiMien()
+    def KvFaceSetup(self):
         self.setup()
-        mien.setup(self.cam_size, self.cam_colorfmt)
+        self.prv.setup(size=self.cam.get_size())
+        self.mien = PiMien()
+        self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
+
+    def KvFaceRun(self, parameter_list):
+        pixels = self.cam.get_pixels()
+        self.mien.run(pixels)
+        self.prv.show(self.mien.pixels)
+
+    def KvFace(self, instance):
+        self.KvFaceSetup()
+        Clock.schedule_interval(self.KvFaceRun, self.dt)
 
 
 class KvMienApp(App):

@@ -51,8 +51,8 @@ if __name__ == "__main__":
     
     im = UxImage(source=filename).texture
     Cim.open(im.size, im.colorfmt)
-    # Cim.dl_setup()
-    Cim.read_rgba(im.pixels)
+    read = Cim.func_read(im.colorfmt)
+    read(im.pixels)
     s = Cim.size()
     d = bytes(s[0]*s[1]*3)
     Cim.write_rgb(d)
