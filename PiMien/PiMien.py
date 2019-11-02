@@ -4,6 +4,9 @@ import sys
 sys.path.append('/Users/zhongsifen/Work/PiKv')
 from PiCim.PiCim import Cim
 
+class Dl:
+    pass
+    
 class PiMien:
     def setup(self, size, colorfmt):
         self.size = size

@@ -71,7 +71,7 @@ class KvMien(AnchorLayout):
         self.mien = PiMien()
         self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
 
-    def KvFaceRun(self, parameter_list):
+    def KvFaceRun(self, dt):
         pixels = self.cam.get_pixels()
         self.mien.run(pixels)
         self.prv.show(self.mien.pixels)
