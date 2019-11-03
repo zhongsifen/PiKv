@@ -38,11 +38,16 @@ bool dl_setup()
 bool dl_run_face()
 {
     bool ret = true;
-    PiCim::Cim *cim = (PiCim::Cim *)cim_get();
+    PiCim::Cim* cim = (PiCim::Cim*)cim_get_im();
+    PiCim::Cface* cface = (PiCim::Cface*)cim_get_face();
     PiDl::tdl(*cim, PiDl::_image);
     ret = PiDl::dlGray(PiDl::_image, PiDl::_dl_gray);      if (!ret) return false;
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);    if (!ret) return false;
-    // PiDl::fdl(PiDl::_dl_face, cface);
+    PiDl::fdl(PiDl::_dl_face, *cface);
+
+    for (int k=0; k<4; k++) {
+        printf("rect[%1d] = %d\n", k, cface->rect[k]);
+    }
 
     return true;
 }

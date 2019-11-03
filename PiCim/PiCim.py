@@ -61,8 +61,9 @@ class Cim:
 
 
 if __name__ == "__main__":
+    # filename = "data/z1.jpg"
     filename = "data/z2.png"
-    
+
     im = UxImage(source=filename).texture
     print(im.size, im.colorfmt)
     ret = Cim.open(im.size, im.colorfmt)
