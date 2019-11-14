@@ -12,6 +12,13 @@ CDLL.cim_write_rgb.restype = ctypes.c_bool
 CDLL.dl_setup.restype = ctypes.c_bool
 CDLL.dl_run_face.restype = ctypes.c_bool
 
+# void * cim_create_face(void * face)
+CDLL.cim_create_face.restype = ctypes.c_void_p
+CDLL.cim_create_face.argtypes = [ctypes.c_void_p]
+# bool cim_write_face(void * face, int rect[4])
+CDLL.cim_write_face.restype = ctypes.c_bool
+# CDLL.cim_write_face.argtypes = [ctypes.c_void_p, ctypes.c_int*4]
+
 
 from PIL import Image as PyImage
 from kivy.core.image import Image as KvImage
@@ -51,6 +58,7 @@ class Cim:
     def write_rgb(pixels):
         return CDLL.cim_write_rgb(ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
 
+
     @staticmethod
     def dl_setup():
         return CDLL.dl_setup()
@@ -58,6 +66,17 @@ class Cim:
     @staticmethod
     def dl_run_face():
         return CDLL.dl_run_face()
+
+
+class Cface(ctypes.Structure):
+    _fields_ = [("face", ctypes.c_int*4)]
+
+
+    def cim_read_face(self, face):
+        return CDLL.cim_read_face(ctypes.pointer(self), face)
+
+    def cim_write_face(self, face):
+        return CDLL.cim_write_face(ctypes.pointer(self), face)
 
 
 if __name__ == "__main__":
@@ -72,15 +91,25 @@ if __name__ == "__main__":
     read(im.pixels)
 
     Cim.dl_setup()
-    ret = Cim.dl_run_face()
-    print("dl_run_face", ret)
+    cface = Cface()
+    cface.face[0] = 42
+    print("cface", type(cface), cface)
+    pface = ctypes.pointer(cface)
+    print("pface", type(pface), pface)
+    face = (ctypes.c_int*4)(3,5,7,9)
+    print("face", type(face), face[0], face[1], face[2], face[3])
+    cface.cim_read_face(face)
+    cface.cim_write_face(face)
+    print(face[:])
+    # ret = Cim.dl_run_face()
+    # print("dl_run_face", ret)
 
-    s = Cim.size()
-    d = bytes(s[0]*s[1]*3)
-    print(s, type(d))
-    Cim.write_rgb(d)
-    pim = PyImage.frombytes('RGB', s, d)
-    pim.show()
-    Cim.close()
+    # s = Cim.size()
+    # d = bytes(s[0]*s[1]*3)
+    # print(s, type(d))
+    # Cim.write_rgb(d)
+    # pim = PyImage.frombytes('RGB', s, d)
+    # pim.show()
+    # Cim.close()
 
     print(filename)
