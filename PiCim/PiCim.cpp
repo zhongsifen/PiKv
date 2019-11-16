@@ -2,91 +2,97 @@
 
 #include "PiCim.hpp"
 
-namespace PiCim
-{
-    Cim _cim;
-    Cface _cface;
-}
+// namespace PiCim
+// {
+//     Cim _cim;
+//     Cface _cface;
+// }
 
-void *cim_get_im()
-{
-    return &PiCim::_cim;
-}
+// void *cim_get_im()
+// {
+//     return &PiCim::_cim;
+// }
 
-void* cim_get_face()
-{
-    return &PiCim::_cface;
-}
+// void* im_get_face()
+// {
+//     return &PiCim::_cface;
+// }
 
-bool cim_open(int size[2], char colorfmt[])
+bool cim_open(void* im, int size[2], char colorfmt[])
 {
-    PiCim::_cim.size[0] = size[0];
-    PiCim::_cim.size[1] = size[1];
-    PiCim::_cim.length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
-    PiCim::_cim.pixels = new uint8_t[PiCim::_cim.length];
+    PiCim::Cim *cim = (PiCim::Cim*)im;
+    cim->size[0] = size[0];
+    cim->size[1] = size[1];
+    cim->length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
+    cim->pixels = new uint8_t[cim->length];
 
     return true;
 }
 
-bool cim_close()
+bool cim_close(void* im)
 {
-    PiCim::_cim.size[0] = 0;
-    PiCim::_cim.size[1] = 0;
-    PiCim::_cim.length = 0;
-    delete[] PiCim::_cim.pixels;
-    PiCim::_cim.pixels = nullptr;
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    delete[] cim->pixels;
+    cim->size[0] = 0;
+    cim->size[1] = 0;
+    cim->length = 0;
+    cim->pixels = nullptr;
 
     return true;
 }
 
-bool cim_size(int size[2])
+bool cim_size(void* im, int size[2])
 {
-    size[0] = PiCim::_cim.size[0];
-    size[1] = PiCim::_cim.size[1];
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    size[0] = cim->size[0];
+    size[1] = cim->size[1];
 
     return true;
 }
 
-bool cim_read_rgb(uint8_t pixels[])
+bool cim_read_rgb(void* im, uint8_t pixels[])
 {
-    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
-    uint8_t *p = PiCim::_cim.pixels;
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
     int i=0, j=0;
     for (int k=0; k<l; k++) {
-        p[i++] = pixels[j++];
-        p[i++] = pixels[j++];
-        p[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
     }
 
     return true;
 }
 
-bool cim_read_rgba(uint8_t pixels[])
+bool cim_read_rgba(void *im, uint8_t pixels[])
 {
-    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
-    uint8_t *p = PiCim::_cim.pixels;
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
     int i = 0, j = 0;
     for (int k = 0; k < l; k++)
     {
-        p[i++] = pixels[j++];
-        p[i++] = pixels[j++];
-        p[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
         j++;
     }
 
     return true;
 }
 
-bool cim_write_rgb(uint8_t pixels[])
+bool cim_write_rgb(void *im, uint8_t pixels[])
 {
-    int l = PiCim::_cim.size[0] * PiCim::_cim.size[1];
-    uint8_t *p = PiCim::_cim.pixels;
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
     int i = 0, j = 0;
     for (int k = 0; k < l; k++)
     {
-        pixels[j++] = p[i++];
-        pixels[j++] = p[i++];
-        pixels[j++] = p[i++];
+        pixels[j++] = pxs[i++];
+        pixels[j++] = pxs[i++];
+        pixels[j++] = pxs[i++];
     }
 
     return true;
@@ -99,16 +105,6 @@ bool cim_run()
     return true;
 }
 
-void* cim_create_face()
-{
-    PiCim::Cface *cface = new PiCim::Cface;
-    cface->rect[0] = 42;
-    cface->rect[1] = 44;
-    cface->rect[2] = 46;
-    cface->rect[0] = 42;
-
-    return cface;
-}
 
 bool cim_read_face(void* face, int rect[4])
 {

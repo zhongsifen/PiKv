@@ -35,11 +35,11 @@ bool dl_setup()
     return true;
 }
 
-bool dl_run_face()
+bool dl_run_face(void* im, void* face)
 {
     bool ret = true;
-    PiCim::Cim* cim = (PiCim::Cim*)cim_get_im();
-    PiCim::Cface* cface = (PiCim::Cface*)cim_get_face();
+    PiCim::Cim* cim = (PiCim::Cim*)im;
+    PiCim::Cface* cface = (PiCim::Cface*)face;
     PiDl::tdl(*cim, PiDl::_image);
     ret = PiDl::dlGray(PiDl::_image, PiDl::_dl_gray);      if (!ret) return false;
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);    if (!ret) return false;

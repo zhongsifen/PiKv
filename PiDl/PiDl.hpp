@@ -49,7 +49,7 @@ namespace PiDl {
 extern "C"
 {
 	bool dl_setup();
-	bool dl_run_face();
+	bool dl_run_face(void* im, void* face);
 	// bool runLandmark(PiCim::Cim &frame, PiDl::Landmark &landmark);
 	// bool runChip(PiCim::Cim &frame, PiDl::Chip &chip);
 	// bool runDesc(PiCim::Cim &frame, PiDl::Desc &desc);

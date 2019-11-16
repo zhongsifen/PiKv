@@ -27,13 +27,13 @@ extern "C"
     void* cim_get_im();
     void* cim_get_face();
     
-    bool cim_open(int size[2], char colorfmt[]);
-    bool cim_close();
-    bool cim_size(int size[2]);
-    bool cim_read_rgb(uint8_t pixels[]);
-    bool cim_read_rgba(uint8_t pixels[]);
-    bool cim_write_rgb(uint8_t pixels[]);
-    
+    bool cim_open(void* im, int size[2], char colorfmt[]);
+    bool cim_close(void *im);
+    bool cim_size(void *im, int size[2]);
+    bool cim_read_rgb(void *im, uint8_t pixels[]);
+    bool cim_read_rgba(void *im, uint8_t pixels[]);
+    bool cim_write_rgb(void *im, uint8_t pixels[]);
+
     bool cim_run();
 
     void* cim_create_face();
