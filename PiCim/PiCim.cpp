@@ -1,6 +1,7 @@
 // ctypes.cpp
 
 #include "PiCim.hpp"
+#include <cstring>
 
 // namespace PiCim
 // {
@@ -18,13 +19,13 @@
 //     return &PiCim::_cface;
 // }
 
-bool cim_open(void* im, int size[2], char colorfmt[])
+bool cim_open(void* im, int size[2], char *colorfmt)
 {
     PiCim::Cim *cim = (PiCim::Cim*)im;
     cim->size[0] = size[0];
     cim->size[1] = size[1];
-    cim->length = (size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3);
-    cim->pixels = new uint8_t[cim->length];
+    cim->colorfmt = colorfmt;
+    cim->pixels = new uint8_t[(size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3)];
 
     return true;
 }
@@ -35,13 +36,12 @@ bool cim_close(void* im)
     delete[] cim->pixels;
     cim->size[0] = 0;
     cim->size[1] = 0;
-    cim->length = 0;
     cim->pixels = nullptr;
 
     return true;
 }
 
-bool cim_size(void* im, int size[2])
+bool cim_get_size(void* im, int size[2])
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     size[0] = cim->size[0];

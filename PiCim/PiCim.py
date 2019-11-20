@@ -7,13 +7,13 @@ CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiDl.so")
 
 # bool cim_open(void * im, int size[2], char colorfmt[])
 CDLL.cim_open.restype = ctypes.c_bool
-CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.c_int*2, ctypes.c_char_p]
+CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.c_char_p]
 # bool cim_close(void * im)
 CDLL.cim_close.restype = ctypes.c_bool
 CDLL.cim_close.argtypes = [ctypes.c_void_p]
-# bool cim_size(void * im, int size[2])
-CDLL.cim_size.restype = ctypes.c_bool
-CDLL.cim_size.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
+# bool cim_get_size(void *im, int size[2])
+CDLL.cim_get_size.restype = ctypes.c_bool
+CDLL.cim_get_size.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
 # bool cim_read_rgb(void * im, uint8_t pixels[])
 CDLL.cim_read_rgb.restype = ctypes.c_bool
 CDLL.cim_read_rgb.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_byte)]
@@ -43,20 +43,17 @@ from kivy.uix.image import Image as UxImage
 class Cim(ctypes.Structure):
     _fields_ = [
         ("size", ctypes.c_int*2), 
-        ("colorfmt", ctypes.c_wchar_p), 
+        ("colorfmt", ctypes.c_char_p),
         ("pixels", ctypes.POINTER(ctypes.c_byte))]
 
     def open(self, size, colorfmt):
-        return CDLL.cim_open(ctypes.pointer(self), (ctypes.c_int*2)(*size), (ctypes.c_char*len(colorfmt))(*colorfmt.encode()))
+        return CDLL.cim_open(ctypes.pointer(self), ctypes.cast(size, ctypes.POINTER(ctypes.c_int)), colorfmt)
 
     def close(self):
         return CDLL.cim_close(ctypes.pointer(self))
 
-    def get_size(self):
-        b_size = (ctypes.c_int*2)()
-        if CDLL.cim_size(ctypes.pointer(self), b_size):
-            return (b_size[0], b_size[1])
-        return (0, 0)
+    def get_size(self, size):
+        return CDLL.cim_get_size(ctypes.pointer(self), ctypes.cast(size, ctypes.POINTER(ctypes.c_int)))
 
     def read_rgb(self, pixels):
         return CDLL.cim_read_rgb(ctypes.pointer(self), ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
@@ -64,21 +61,8 @@ class Cim(ctypes.Structure):
     def read_rgba(self, pixels):
         return CDLL.cim_read_rgba(ctypes.pointer(self), ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
 
-    # @staticmethod
-    # def func_read(colorfmt):
-    #     return Cim.read_rgba if (colorfmt == 'rgba') else Cim.read_rgb
-
     def write_rgb(self, pixels):
         return CDLL.cim_write_rgb(ctypes.pointer(self), ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
-
-
-    # @staticmethod
-    # def dl_setup():
-    #     return CDLL.dl_setup()
-
-    # @staticmethod
-    # def dl_run_face():
-    #     return CDLL.dl_run_face()
 
 
 class Cface(ctypes.Structure):
@@ -93,14 +77,16 @@ class Cface(ctypes.Structure):
 
 
 if __name__ == "__main__":
-    # filename = "data/z1.jpg"
     filename = "data/z2.png"
 
     im = UxImage(source=filename).texture
-    print(im.size, im.colorfmt)
+    size = (ctypes.c_int*2)()
+    size[0] = im.size[0]
+    size[1] = im.size[1]
+    colorfmt = im.colorfmt.encode()
     cim = Cim()
-    ret = cim.open(im.size, im.colorfmt)
-    print("Cim.open", ret)
+    cim.open(size, colorfmt)
+
     ret = cim.read_rgba(im.pixels)
 
     # Cim.dl_setup()
@@ -118,11 +104,11 @@ if __name__ == "__main__":
     # ret = Cim.dl_run_face()
     # print("dl_run_face", ret)
 
-    s = cim.get_size()
+    s = (ctypes.c_int*2)()
+    cim.get_size(s)
     d = bytes(s[0]*s[1]*3)
-    print(s, type(d))
     cim.write_rgb(d)
-    pim = PyImage.frombytes('RGB', s, d)
+    pim = PyImage.frombytes('RGB', (s[0], s[1]), d)
     pim.show()
     cim.close()
 

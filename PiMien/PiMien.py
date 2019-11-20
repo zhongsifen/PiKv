@@ -14,9 +14,9 @@ class PiMien:
         self.pixels = bytes((size[0]*size[1]) * 3)
         self.cim = Cim()
         self.cim.open(size, colorfmt)
-        self.read = cim.func_read(colorfmt)
 
     def run(self, pixels):
-        self.read(pixels)
+        pass
+        # self.read(pixels)
 
-        Cim.write_rgb(self.pixels)
+        # Cim.write_rgb(self.pixels)
