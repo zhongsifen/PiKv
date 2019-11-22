@@ -7,16 +7,19 @@ from PiCim.PiCim import Cim
 class Dl:
     pass
     
-class PiMien:
+class Mien:
     def setup(self, size, colorfmt):
-        self.size = size
-        self.colorfmt = colorfmt
-        self.pixels = bytes((size[0]*size[1]) * 3)
+        self.size = [size[0], size[1]]
+        self.colorfmt = colorfmt.encode()
+        # self.pixels = bytes((size[0]*size[1]) * 3)
         self.cim = Cim()
-        self.cim.open(size, colorfmt)
+        print("size colorfmt:", type(size), type(colorfmt))
+        print("setup: size colorfmt", type(self.size), self.size[0], self.size[1], type(self.colorfmt), self.colorfmt)
+        self.cim.open(self.size, self.colorfmt)
 
-    def run(self, pixels):
-        pass
-        # self.read(pixels)
+    def run(self, pixels, pixela):
+        self.cim.read_rgba(pixels)
 
-        # Cim.write_rgb(self.pixels)
+        # processing(pixela)
+
+        self.cim.write_rgb(pixela)

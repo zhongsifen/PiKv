@@ -12,8 +12,6 @@
 #include "PiDlConfig.hpp"
 #include "dlib_anet.hpp"
 #include <dlib/image_processing/frontal_face_detector.h>
-#include <dlib/opencv.h>
-#include <opencv2/core.hpp>
 #include "PiCim/PiCim.hpp"
 
 namespace PiDl {
@@ -41,7 +39,6 @@ namespace PiDl {
 
 	void fdl(Image &image, PiCim::Cim &cim);
 	void tdl(PiCim::Cim &cim, Image &image);
-	// void tdl(PiCV::Gray &gray, Gray &gray_d);
 	void fdl(Face &face, PiCim::Cface &cface);
 
 } // namespace PiDl

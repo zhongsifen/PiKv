@@ -13,7 +13,6 @@ set_target_properties(PiDl PROPERTIES
 
 target_include_directories(PiDl PUBLIC
 	${CMAKE_SOURCE_DIR}
-	${OPENCV_DIR}/include/opencv4
 	${DLIB_DIR}/include
 )
 

@@ -14,7 +14,7 @@ from kivy.config import Config
 Config.set('graphics', 'width',  '960')
 Config.set('graphics', 'height', '960')
 
-from PiMien import PiMien
+from PiMien import Mien
 
 class KvCam(Camera):
     def get_size(self):
@@ -68,13 +68,17 @@ class KvMien(AnchorLayout):
     def KvFaceSetup(self):
         self.setup()
         self.prv.setup(size=self.cam.get_size())
-        self.mien = PiMien()
+        self.mien = Mien()
         self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
 
     def KvFaceRun(self, dt):
         pixels = self.cam.get_pixels()
-        self.mien.run(pixels)
-        self.prv.show(self.mien.pixels)
+        size = self.cam.get_size()
+        pixela = bytes(size[0]*size[1]*3)
+
+        self.mien.run(pixels, pixela)
+
+        self.prv.show(pixela)
 
     def KvFace(self, instance):
         self.KvFaceSetup()

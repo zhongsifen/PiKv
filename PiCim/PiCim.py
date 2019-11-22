@@ -5,9 +5,9 @@ import os
 CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiDl.so")
 
 
-# bool cim_open(void * im, int size[2], char colorfmt[])
+# bool cim_open(void * im, int size[2], char *colorfmt)
 CDLL.cim_open.restype = ctypes.c_bool
-CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.c_char_p]
+CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.c_int*2, ctypes.c_char_p]
 # bool cim_close(void * im)
 CDLL.cim_close.restype = ctypes.c_bool
 CDLL.cim_close.argtypes = [ctypes.c_void_p]
@@ -47,7 +47,9 @@ class Cim(ctypes.Structure):
         ("pixels", ctypes.POINTER(ctypes.c_byte))]
 
     def open(self, size, colorfmt):
-        return CDLL.cim_open(ctypes.pointer(self), ctypes.cast(size, ctypes.POINTER(ctypes.c_int)), colorfmt)
+        _size = (ctypes.c_int*2)()
+        _size[:] = size
+        return CDLL.cim_open(ctypes.pointer(self), _size, colorfmt)
 
     def close(self):
         return CDLL.cim_close(ctypes.pointer(self))
