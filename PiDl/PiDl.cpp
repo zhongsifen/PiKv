@@ -45,10 +45,6 @@ bool dl_run_face(void* im, void* face)
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);    if (!ret) return false;
     PiDl::fdl(PiDl::_dl_face, *cface);
 
-    for (int k=0; k<4; k++) {
-        printf("rect[%1d] = %d\n", k, cface->rect[k]);
-    }
-
     return true;
 }
 

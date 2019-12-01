@@ -22,10 +22,6 @@ namespace PiCim {
 
 extern "C"
 {
-    // void pic_rgba_rgb(uint8_t pixels_rgba[], uint8_t pixels_rgb[], int size[2]);
-    void* cim_get_im();
-    void* cim_get_face();
-    
     bool cim_open(void* im, int size[2], char *colorfmt);
     bool cim_close(void *im);
     bool cim_get_size(void *im, int size[2]);
@@ -33,11 +29,8 @@ extern "C"
     bool cim_read_rgba(void *im, uint8_t pixels[]);
     bool cim_write_rgb(void *im, uint8_t pixels[]);
 
-    bool cim_run();
-
-    void* cim_create_face();
-    bool cim_read_face(void* cface, int32_t rect[4]);
-    bool cim_write_face(void* cface, int32_t rect[4]);
+    bool cface_read(void* cface, int32_t rect[4]);
+    bool cface_write(void* cface, int32_t rect[4]);
 }
 
 #endif

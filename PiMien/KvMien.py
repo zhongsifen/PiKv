@@ -9,6 +9,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image
 from kivy.uix.camera import Camera
 from kivy.graphics.texture import Texture
+from kivy.graphics import Line
 from kivy.clock import Clock
 from kivy.config import Config
 Config.set('graphics', 'width',  '960')
@@ -34,6 +35,10 @@ class KvPreview(Image):
     
     def show(self, pixels):
         self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
+    
+    def show_face(self, face):
+        with self.canvas:
+            Line(rectangle=(self.center[0], self.center[1], 10, 10))
 
 
 class KvMien(AnchorLayout):
@@ -75,10 +80,12 @@ class KvMien(AnchorLayout):
         pixels = self.cam.get_pixels()
         size = self.cam.get_size()
         pixela = bytes(size[0]*size[1]*3)
+        face = [0]*4
 
-        self.mien.run(pixels, pixela)
+        self.mien.run(pixels, pixela, face)
 
         self.prv.show(pixela)
+        self.prv.show_face(face)
 
     def KvFace(self, instance):
         self.KvFaceSetup()

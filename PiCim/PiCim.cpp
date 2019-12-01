@@ -98,15 +98,8 @@ bool cim_write_rgb(void *im, uint8_t pixels[])
     return true;
 }
 
-bool cim_run()
-{
-    int n = 256;
 
-    return true;
-}
-
-
-bool cim_read_face(void* face, int rect[4])
+bool cface_read(void* face, int rect[4])
 {
     PiCim::Cface *cface = (PiCim::Cface *)face;
     for (int i = 0; i < 4; i++)
@@ -117,17 +110,9 @@ bool cim_read_face(void* face, int rect[4])
     return true;
 }
 
-bool cim_write_face(void *face, int rect[4])
+bool cface_write(void *face, int rect[4])
 {
     PiCim::Cface *cface = (PiCim::Cface *)face;
-    
-    printf("write: ");
-    for (int i = 0; i < 4; i++)
-    {
-        printf("%d,", cface->rect[i]);
-    }
-    printf("\n");
-
     for (int i = 0; i < 4; i++)
     {
         rect[i] = cface->rect[i];
