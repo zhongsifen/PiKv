@@ -12,6 +12,7 @@
 #include "PiDlConfig.hpp"
 #include "dlib_anet.hpp"
 #include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/image_transforms.h>
 #include "PiCim/PiCim.hpp"
 
 namespace PiDl {
@@ -35,11 +36,12 @@ namespace PiDl {
 	// void fdl(Shape &shape_dl, PiCV::Landmark &landmark);
 	// void fdl(Desc &desc_dl, PiCV::Desc &desc);
 	
-	// void fdl(Feat &feat_dl, PiCV::Feat &feat);
-
 	void fdl(Image &image, PiCim::Cim &cim);
 	void tdl(PiCim::Cim &cim, Image &image);
 	void fdl(Face &face, PiCim::Cface &cface);
+	void tdl(PiCim::Cface &cface, Face &face);
+
+	void show_face(PiCim::Cim &cim, PiCim::Cface &cface);
 
 } // namespace PiDl
 
@@ -47,6 +49,7 @@ extern "C"
 {
 	bool dl_setup();
 	bool dl_run_face(void* im, void* face);
+	bool dl_show_face(void* im, void* face);
 	// bool runLandmark(PiCim::Cim &frame, PiDl::Landmark &landmark);
 	// bool runChip(PiCim::Cim &frame, PiDl::Chip &chip);
 	// bool runDesc(PiCim::Cim &frame, PiDl::Desc &desc);

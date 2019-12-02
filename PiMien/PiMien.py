@@ -17,6 +17,7 @@ class Mien:
     def run(self, pixels, pixela, face):
         self.mien.cim_read_rgba(pixels)
         self.mien.dl_run_face()
+        self.mien.dl_show_face()
 
         # processing(pixela)
 

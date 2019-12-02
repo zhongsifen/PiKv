@@ -92,6 +92,9 @@ class Cmien:
     def dl_run_face(self):
         return CDLL.dl_run_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
 
+    def dl_show_face(self):
+        return CDLL.dl_show_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
+
 if __name__ == "__main__":
     filename = "data/z2.png"
 
@@ -107,6 +110,7 @@ if __name__ == "__main__":
 
     mien.dl_setup()
     mien.dl_run_face()
+    mien.dl_show_face()
 
     face = (ctypes.c_int*4)()
     mien.cface_write(face)

@@ -36,9 +36,9 @@ class KvPreview(Image):
     def show(self, pixels):
         self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
     
-    def show_face(self, face):
-        with self.canvas:
-            Line(rectangle=(self.center[0], self.center[1], 10, 10))
+    # def show_face(self, face):
+    #     with self.canvas:
+    #         Line(rectangle=(self.center[0], self.center[1], 10, 10))
 
 
 class KvMien(AnchorLayout):
@@ -85,7 +85,7 @@ class KvMien(AnchorLayout):
         self.mien.run(pixels, pixela, face)
 
         self.prv.show(pixela)
-        self.prv.show_face(face)
+        # self.prv.show_face(face)
 
     def KvFace(self, instance):
         self.KvFaceSetup()

@@ -2,6 +2,7 @@
 
 #include "_PiDl.hpp"
 #include "PiCim/PiCim.hpp"
+// #include <dlib/image_transforms.h>
 
 namespace PiDl
 {
@@ -48,13 +49,18 @@ bool dl_run_face(void* im, void* face)
     return true;
 }
 
-bool dl_runFace(PiCim::Cim &cim, PiCim::Cface &cface)
+bool dl_show_face(void *im, void *face)
 {
-    bool ret = true;
-    PiDl::tdl(cim, PiDl::_image);
-    ret = PiDl::dlGray(PiDl::_image, PiDl::_dl_gray);      if (!ret) return false;
-    ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);    if (!ret) return false;
-    PiDl::fdl(PiDl::_dl_face, cface);
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    PiCim::Cface *cface = (PiCim::Cface *)face;
+    PiDl::Image img;
+    PiDl::Face rect;
+    rgb_pixel val(0x00, 0x00, 0x00);
+    PiDl::tdl(*cim, img);
+    PiDl::tdl(*cface, rect);
+    draw_rectangle(img, rect, rgb_pixel(0xF0, 0x00, 0x00));
+    PiDl::fdl(img, *cim);
+    // rgb_pixel val(0x80, 0x80, 0x80);
 
     return true;
 }
@@ -264,4 +270,28 @@ void PiDl::fdl(Face &face, PiCim::Cface &cface)
     cface.rect[1] = (int)face.top();
     cface.rect[2] = (int)face.right();
     cface.rect[3] = (int)face.bottom();
+}
+
+void PiDl::tdl(PiCim::Cface &cface, Face &face)
+{
+    face = dlib::rectangle(
+        cface.rect[0],
+        cface.rect[1],
+        cface.rect[2],
+        cface.rect[3]);
+}
+
+// void draw_rectangle(
+//     image_type &img,
+//     const rectangle &rect,
+//     const pixel_type &val,
+//     unsigned int thickness = 1);
+void PiDl::show_face(PiCim::Cim &cim, PiCim::Cface &cface)
+{
+    Image img;
+    Face rect;
+    rgb_pixel val(0x80, 0x80, 0x80);
+    tdl(cim, img);
+    tdl(cface, rect);
+    draw_rectangle(img, rect, val);
 }
