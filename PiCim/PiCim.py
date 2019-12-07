@@ -2,7 +2,7 @@
 
 import ctypes
 import os
-CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiDl.so")
+CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiMien.so")
 
 # bool cim_open(void * im, int size[2], char *colorfmt)
 CDLL.cim_open.restype = ctypes.c_bool
@@ -114,6 +114,7 @@ if __name__ == "__main__":
 
     face = (ctypes.c_int*4)()
     mien.cface_write(face)
+    print("face:", face[:])
 
     s = (ctypes.c_int*2)()
     mien.cim_get_size(s)
