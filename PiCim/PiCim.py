@@ -36,6 +36,9 @@ CDLL.dl_setup.argtypes = None
 # bool dl_run_face(void * im, void * face)
 CDLL.dl_run_face.restype = ctypes.c_bool
 CDLL.dl_run_face.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+# bool dl_run_landmark(void * im, void * landmark)
+CDLL.dl_run_landmark.restype = ctypes.c_bool
+CDLL.dl_run_landmark.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
 from PIL import Image as PyImage
 from kivy.core.image import Image as KvImage
@@ -51,11 +54,14 @@ class Cim(ctypes.Structure):
 class Cface(ctypes.Structure):
     _fields_ = [("face", ctypes.c_int*4)]
 
+class Clandmark(ctypes.Structure):
+    _fields_ = [("landmark", ctypes.c_int*(68*2))]
 
 class Cmien:
     def __init__(self):
         self.im = Cim()
         self.face = Cface()
+        self.landmark = Clandmark()
 
     def cim_open(self, size, colorfmt):
         _size = (ctypes.c_int*2)()
@@ -92,8 +98,11 @@ class Cmien:
     def dl_run_face(self):
         return CDLL.dl_run_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
 
-    def dl_show_face(self):
-        return CDLL.dl_show_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
+    # def dl_show_face(self):
+    #     return CDLL.dl_show_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
+
+    def dl_run_landmark(self):
+        return CDLL.dl_run_landmark(ctypes.pointer(self.im), ctypes.pointer(self.landmark))
 
 if __name__ == "__main__":
     filename = "data/z2.png"
@@ -109,12 +118,13 @@ if __name__ == "__main__":
     ret = mien.cim_read_rgba(im.pixels)
 
     mien.dl_setup()
-    mien.dl_run_face()
-    mien.dl_show_face()
+    # mien.dl_run_face()
+    mien.dl_run_landmark()
+    # mien.dl_show_face()
 
-    face = (ctypes.c_int*4)()
-    mien.cface_write(face)
-    print("face:", face[:])
+    # face = (ctypes.c_int*4)()
+    # mien.cface_write(face)
+    # print("face:", face[:])
 
     s = (ctypes.c_int*2)()
     mien.cim_get_size(s)

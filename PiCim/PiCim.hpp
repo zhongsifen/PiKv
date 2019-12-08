@@ -18,7 +18,13 @@ namespace PiCim {
     {
         int32_t rect[4];
     } Cface;
+
+    typedef struct
+    {
+        int32_t shape[68*2];
+    } Clandmark;
 }
+
 
 extern "C"
 {

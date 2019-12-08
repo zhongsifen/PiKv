@@ -40,6 +40,7 @@ namespace PiDl {
 	void tdl(PiCim::Cim &cim, Image &image);
 	void fdl(Face &face, PiCim::Cface &cface);
 	void tdl(PiCim::Cface &cface, Face &face);
+	void fdl(Shape &shape_dl, PiCim::Clandmark &landmark);
 
 	void show_face(PiCim::Cim &cim, PiCim::Cface &cface);
 
@@ -50,7 +51,7 @@ extern "C"
 	bool dl_setup();
 	bool dl_run_face(void* im, void* face);
 	bool dl_show_face(void* im, void* face);
-	// bool runLandmark(PiCim::Cim &frame, PiDl::Landmark &landmark);
+	bool dl_run_landmark(void* im, void* landmark);
 	// bool runChip(PiCim::Cim &frame, PiDl::Chip &chip);
 	// bool runDesc(PiCim::Cim &frame, PiDl::Desc &desc);
 
