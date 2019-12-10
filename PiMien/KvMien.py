@@ -73,14 +73,14 @@ class KvMien(AnchorLayout):
     def PiStop(self, instance):
         pass
 
-    def KvFaceSetup(self):
+    def KvMienSetup(self):
         self.setup()
         self.prv.setup(size=self.cam.get_size())
         self.chp.setup(size=(150, 150))
         self.mien = Mien()
         self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
 
-    def KvFaceRun(self, dt):
+    def KvMienStep(self, dt):
         pixels = self.cam.get_pixels()
         size = self.cam.get_size()
         pixela = bytes(size[0]*size[1]*3)
@@ -91,9 +91,9 @@ class KvMien(AnchorLayout):
         self.prv.show(pixela)
         self.chp.show(pixelc)
 
-    def KvFace(self, instance):
-        self.KvFaceSetup()
-        Clock.schedule_interval(self.KvFaceRun, self.dt)
+    def KvMienLoop(self, instance):
+        self.KvMienSetup()
+        Clock.schedule_interval(self.KvMienStep, self.dt)
 
 
 class KvMienApp(App):
