@@ -28,24 +28,27 @@ class KvCam(Camera):
         return self.texture.pixels
 
 
-class KvPreview(Image):
+class KvIm(Image):
     def setup(self, size, colorfmt='rgb'):
         self.texture = Texture.create(size=size, colorfmt=colorfmt)
         self.texture.flip_vertical()
     
     def show(self, pixels):
         self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
-    
-    # def show_face(self, face):
-    #     with self.canvas:
-    #         Line(rectangle=(self.center[0], self.center[1], 10, 10))
 
+
+class KvPreview(KvIm):
+    pass
+
+class KvChip(KvIm):
+    pass
 
 class KvMien(AnchorLayout):
     def setup(self):
         self.dt=(1.0/25)
         self.cam=self.ids._camera
         self.prv=self.ids._preview
+        self.chp=self.ids._chip
     
     def run(self, dt):
         pixels = self.cam.get_pixels()
@@ -73,6 +76,7 @@ class KvMien(AnchorLayout):
     def KvFaceSetup(self):
         self.setup()
         self.prv.setup(size=self.cam.get_size())
+        self.chp.setup(size=(150, 150))
         self.mien = Mien()
         self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
 
@@ -80,12 +84,12 @@ class KvMien(AnchorLayout):
         pixels = self.cam.get_pixels()
         size = self.cam.get_size()
         pixela = bytes(size[0]*size[1]*3)
-        face = [0]*4
+        pixelc = bytes(150*150*3)
 
-        self.mien.run(pixels, pixela, face)
+        self.mien.run(pixels, pixela, pixelc)
 
         self.prv.show(pixela)
-        # self.prv.show_face(face)
+        self.chp.show(pixelc)
 
     def KvFace(self, instance):
         self.KvFaceSetup()

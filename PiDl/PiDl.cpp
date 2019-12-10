@@ -6,26 +6,26 @@
 
 namespace PiDl
 {
-dlib::frontal_face_detector _fd;
-dlib::shape_predictor _sp;
-dlib_anet::anet_type _net;
+    dlib::frontal_face_detector _fd;
+    dlib::shape_predictor _sp;
+    dlib_anet::anet_type _net;
 
-Face _dl_face;
-Gray _dl_gray;
+    Image _dl_image;
+    Face _dl_face;
+    Gray _dl_gray;
+    Shape _dl_shape;
+    Chip _dl_chip;
 
-Image _image;
-Shape _shape_dl;
-Chip _chip_dl;
-Desc _desc_dl;
+    Desc _desc_dl;
 
-enum {
-	NONE,
-	INIT,
-	FACE,
-	LANDMARK,
-	CHIP,
-}
-_stage;
+    enum
+    {
+        NONE,
+        INIT,
+        FACE,
+        LANDMARK,
+        CHIP,
+    } _stage;
 
 } // namespace PiDl
 
@@ -53,11 +53,11 @@ bool dl_show_face(void *im, void *face)
 
 bool dl_run_face(void *im, void *face)
 {
-    bool ret = true;
     PiCim::Cim *cim = (PiCim::Cim *)im;
     PiCim::Cface *cface = (PiCim::Cface *)face;
-    PiDl::tdl(*cim, PiDl::_image);
-    ret = PiDl::dlGray(PiDl::_image, PiDl::_dl_gray);
+    bool ret = true;
+    PiDl::tdl(*cim, PiDl::_dl_image);
+    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);
     if (!ret)
         return false;
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);
@@ -68,61 +68,58 @@ bool dl_run_face(void *im, void *face)
     return true;
 }
 
-// void draw_solid_circle(
-//     image_type &img,
-//     const dpoint &center_point,
-//     double radius,
-//     const pixel_type &pixel);
 bool dl_run_landmark(void *im, void *landmark)
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     PiCim::Clandmark *clandmark = (PiCim::Clandmark *)landmark;
     bool ret = true;
-    PiDl::tdl(*cim, PiDl::_image);
-    ret = PiDl::dlGray(PiDl::_image, PiDl::_dl_gray);  if (!ret) return false;
+    PiDl::tdl(*cim, PiDl::_dl_image);
+    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);  if (!ret) return false;
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
-    draw_rectangle(PiDl::_image, PiDl::_dl_face, rgb_pixel(0xF0, 0x00, 0x00));
-    ret = PiDl::dlShape(PiDl::_dl_gray, PiDl::_dl_face, PiDl::_shape_dl);   if (!ret) return false;
-    int n = PiDl::_shape_dl.num_parts();
+    draw_rectangle(PiDl::_dl_image, PiDl::_dl_face, rgb_pixel(0xF0, 0x00, 0x00));
+    ret = PiDl::dlShape(PiDl::_dl_gray, PiDl::_dl_face, PiDl::_dl_shape);   if (!ret) return false;
+    int n = PiDl::_dl_shape.num_parts();
     for (int i = 0; i < n; i++)
     {
-        draw_solid_circle(PiDl::_image, PiDl::_shape_dl.part(i), 2, rgb_pixel(0x00, 0xF0, 0xF0));
+        draw_solid_circle(PiDl::_dl_image, PiDl::_dl_shape.part(i), 2, rgb_pixel(0xF0, 0x00, 0x00));
     }
-    PiDl::fdl(PiDl::_shape_dl, *clandmark);
-    PiDl::fdl(PiDl::_image, *cim);
+    PiDl::fdl(PiDl::_dl_shape, *clandmark);
+    PiDl::fdl(PiDl::_dl_image, *cim);
+
+    return true;
+}
+
+bool dl_run_chip(void* im, void* chip)
+{
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    PiCim::Cim *cchip = (PiCim::Cim *)chip;
+    bool ret = true;
+    PiDl::tdl(*cim, PiDl::_dl_image);
+    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);  if (!ret) return false;
+    ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
+    ret = PiDl::dlShape(PiDl::_dl_gray, PiDl::_dl_face, PiDl::_dl_shape); if (!ret) return false;
+    ret = PiDl::dlChip(PiDl::_dl_image, PiDl::_dl_shape, PiDl::_dl_chip);  if (!ret) return false;
+    PiDl::fdl(PiDl::_dl_chip, *cchip);
 
     return true;
 }
 
 #if 0
-bool PiDl::runChip(PiCim::Cim &frame, PiCV::Chip &chip)
-{
-    bool ret = true;
-    tdl(frame, PiDl::_image);
-    ret = dlGray(PiDl::_image, PiDl::_dl_gray);  if (!ret) return false;
-    ret = dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
-    ret = dlShape(PiDl::_dl_gray, PiDl::_dl_face, _shape_dl); if (!ret) return false;
-    ret = dlChip(PiDl::_image, _shape_dl, _chip_dl); if (!ret) return false;
-    fdl(_chip_dl, chip);
-
-    return true;
-}
-
 bool PiDl::runDesc(PiCim::Cim &frame, PiCV::Desc &desc)
 {
     bool ret = true;
-    tdl(frame, PiDl::_image);
-    ret = dlGray(PiDl::_image, PiDl::_dl_gray);  if (!ret) return false;
+    tdl(frame, PiDl::_dl_image);
+    ret = dlGray(PiDl::_dl_image, PiDl::_dl_gray);  if (!ret) return false;
     ret = dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
-    ret = dlShape(PiDl::_dl_gray, PiDl::_dl_face, _shape_dl); if (!ret) return false;
-    ret = dlChip(PiDl::_image, _shape_dl, _chip_dl); if (!ret) return false;
-    ret = dlDesc(_chip_dl, _desc_dl);
+    ret = dlShape(PiDl::_dl_gray, PiDl::_dl_face, _dl_shape); if (!ret) return false;
+    ret = dlChip(PiDl::_dl_image, _dl_shape, _dl_chip); if (!ret) return false;
+    ret = dlDesc(_dl_chip, _desc_dl);
     fdl(_desc_dl, desc);
 
     return true;
 }
 
-bool PiDl::runFeat(void *pPiDl::_image, void *p_feat)
+bool PiDl::runFeat(void *pPiDl::_dl_image, void *p_feat)
 {
     PiCim::Cim *cv_image = (PiCim::Cim*)p_image;
     PiCV::Feat *cv_feat = (PiCV::Feat*)p_feat;
@@ -257,8 +254,10 @@ void PiDl::fdl(Image &image, PiCim::Cim &cim)
 {
     cim.size[0] = image.nc();
     cim.size[1] = image.nr();
-    uint8_t *p = (uint8_t *)&image(0, 0);
+    cim.colorfmt = "rgb";
     int n = cim.size[0] * cim.size[1] * 3;
+    cim.pixels = new uint8_t[n];
+    uint8_t *p = (uint8_t *)&image(0, 0);
     for (int k = 0; k < n; k++)
     {
         cim.pixels[k] = p[k];

@@ -38,6 +38,7 @@
         anchor_y: 'top'
 
         GridLayout:
+            rows: 2
             cols: 2
             size_hint: None,None
             width: root.width - _toolbox.width
@@ -48,6 +49,8 @@
                 play: True
             KvPreview:
                 id: _preview
+            KvChip:
+                id: _chip
     AnchorLayout:
         anchor_x: 'center'
         anchor_y: 'bottom'

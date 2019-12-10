@@ -14,13 +14,12 @@ class Mien:
         self.mien.cim_open(self.size, self.colorfmt)
         self.mien.dl_setup()
 
-    def run(self, pixels, pixela, face):
+    def run(self, pixels, pixela, pixelc):
         self.mien.cim_read_rgba(pixels)
-        # self.mien.dl_run_face()
-        # self.mien.dl_show_face()
-        self.mien.dl_run_landmark()
 
-        # processing(pixela)
+        # self.mien.dl_run_face()
+        # self.mien.dl_run_landmark()
+        self.mien.dl_run_chip()
 
         self.mien.cim_write_rgb(pixela)
-        self.mien.cface_write(face)
+        self.mien.cchip_write(pixelc)

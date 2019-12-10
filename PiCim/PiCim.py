@@ -39,6 +39,9 @@ CDLL.dl_run_face.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 # bool dl_run_landmark(void * im, void * landmark)
 CDLL.dl_run_landmark.restype = ctypes.c_bool
 CDLL.dl_run_landmark.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+# bool dl_run_chip(void * im, void * chip)
+CDLL.dl_run_chip.restype = ctypes.c_bool
+CDLL.dl_run_chip.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
 from PIL import Image as PyImage
 from kivy.core.image import Image as KvImage
@@ -62,6 +65,7 @@ class Cmien:
         self.im = Cim()
         self.face = Cface()
         self.landmark = Clandmark()
+        self.chip = Cim()
 
     def cim_open(self, size, colorfmt):
         _size = (ctypes.c_int*2)()
@@ -92,6 +96,12 @@ class Cmien:
         face[:] = t
         return ret
 
+    def cchip_get_size(self, size):
+        return CDLL.cim_get_size(ctypes.pointer(self.chip), ctypes.cast(size, ctypes.POINTER(ctypes.c_int)))
+
+    def cchip_write(self, pixels):
+        return CDLL.cim_write_rgb(ctypes.pointer(self.chip), ctypes.cast(pixels, ctypes.POINTER(ctypes.c_byte)))
+
     def dl_setup(self):
         return CDLL.dl_setup()
 
@@ -103,6 +113,9 @@ class Cmien:
 
     def dl_run_landmark(self):
         return CDLL.dl_run_landmark(ctypes.pointer(self.im), ctypes.pointer(self.landmark))
+    
+    def dl_run_chip(self):
+        return CDLL.dl_run_chip(ctypes.pointer(self.im), ctypes.pointer(self.chip))
 
 if __name__ == "__main__":
     filename = "data/z2.png"
@@ -119,7 +132,13 @@ if __name__ == "__main__":
 
     mien.dl_setup()
     # mien.dl_run_face()
-    mien.dl_run_landmark()
+    # mien.dl_run_landmark()
+    # _size = (ctypes.c_int*2)()
+    # _size[:] = size
+    CDLL.cim_open(ctypes.pointer(mien.chip), (ctypes.c_int*2)(150, 150), b'rgb')
+    
+    mien.dl_run_chip()
+
     # mien.dl_show_face()
 
     # face = (ctypes.c_int*4)()
@@ -127,11 +146,17 @@ if __name__ == "__main__":
     # print("face:", face[:])
 
     s = (ctypes.c_int*2)()
-    mien.cim_get_size(s)
+    # print(mien.chip.size[:])
+    # print(mien.chip.pixels)
+    mien.cchip_get_size(s)
     d = bytes(s[0]*s[1]*3)
-    mien.cim_write_rgb(d)
+    mien.cchip_write(d)
     pim = PyImage.frombytes('RGB', (s[0], s[1]), d)
     pim.show()
+    # size_chip = (mien.chip.size[0], mien.chip.size[1])
+    # print("size_chip", type(size_chip), size_chip)
+    # pchip = PyImage.frombytes('RGB', size_chip, mien.im.pixels)
+    # pchip.show()
     mien.cim_close()
 
     print(filename)

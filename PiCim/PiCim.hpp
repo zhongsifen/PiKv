@@ -37,6 +37,9 @@ extern "C"
 
     bool cface_read(void* cface, int32_t rect[4]);
     bool cface_write(void* cface, int32_t rect[4]);
+
+    bool cchip_get_size(void *chip, int size[2]);
+    bool cchip_write(void *chip, uint8_t pixels[]);
 }
 
 #endif

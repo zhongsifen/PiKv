@@ -52,6 +52,7 @@ extern "C"
 	bool dl_run_face(void* im, void* face);
 	bool dl_show_face(void* im, void* face);
 	bool dl_run_landmark(void* im, void* landmark);
+	bool dl_run_chip(void *im, void *chip);
 	// bool runChip(PiCim::Cim &frame, PiDl::Chip &chip);
 	// bool runDesc(PiCim::Cim &frame, PiDl::Desc &desc);
 
