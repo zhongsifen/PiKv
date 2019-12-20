@@ -19,13 +19,12 @@
 //     return &PiCim::_cface;
 // }
 
-bool cim_open(void* im, int size[2], char *colorfmt)
+bool cim_open(void* im, int size[2])
 {
     PiCim::Cim *cim = (PiCim::Cim*)im;
     cim->size[0] = size[0];
     cim->size[1] = size[1];
-    // cim->colorfmt = colorfmt;
-    cim->pixels = new uint8_t[(size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3)];
+    cim->pixels = new uint8_t[(size[0] * size[1]) * 3];
 
     return true;
 }

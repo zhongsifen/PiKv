@@ -6,7 +6,7 @@ CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiMien.so")
 
 # bool cim_open(void* im, int size[2], char *colorfmt)
 CDLL.cim_open.restype = ctypes.c_bool
-CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.c_int*2, ctypes.c_char_p]
+CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.c_int*2]
 # bool cim_close(void* im)
 CDLL.cim_close.restype = ctypes.c_bool
 CDLL.cim_close.argtypes = [ctypes.c_void_p]
@@ -74,10 +74,10 @@ class Cmien:
         self.chip = Cim()
         self.desc = Cdesc()
 
-    def cim_open(self, size, colorfmt):
+    def cim_open(self, size):
         _size = (ctypes.c_int*2)()
         _size[:] = size
-        return CDLL.cim_open(ctypes.pointer(self.im), _size, colorfmt)
+        return CDLL.cim_open(ctypes.pointer(self.im), _size)
 
     def cim_close(self):
         return CDLL.cim_close(ctypes.pointer(self.im))
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     colorfmt = im.colorfmt.encode()
 
     mien = Cmien()
-    mien.cim_open(size, colorfmt)
+    mien.cim_open(size)
     ret = mien.cim_read_rgba(im.pixels)
 
     mien.dl_setup()
