@@ -4,44 +4,47 @@ import ctypes
 import os
 CDLL = ctypes.CDLL(os.path.dirname(__file__) + "/../install/libPiMien.so")
 
-# bool cim_open(void * im, int size[2], char *colorfmt)
+# bool cim_open(void* im, int size[2], char *colorfmt)
 CDLL.cim_open.restype = ctypes.c_bool
 CDLL.cim_open.argtypes = [ctypes.c_void_p, ctypes.c_int*2, ctypes.c_char_p]
-# bool cim_close(void * im)
+# bool cim_close(void* im)
 CDLL.cim_close.restype = ctypes.c_bool
 CDLL.cim_close.argtypes = [ctypes.c_void_p]
-# bool cim_get_size(void *im, int size[2])
+# bool cim_get_size(void* im, int size[2])
 CDLL.cim_get_size.restype = ctypes.c_bool
 CDLL.cim_get_size.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
-# bool cim_read_rgb(void * im, uint8_t pixels[])
+# bool cim_read_rgb(void* im, uint8_t pixels[])
 CDLL.cim_read_rgb.restype = ctypes.c_bool
 CDLL.cim_read_rgb.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_byte)]
-# bool cim_read_rgba(void * im, uint8_t pixels[])
+# bool cim_read_rgba(void* im, uint8_t pixels[])
 CDLL.cim_read_rgba.restype = ctypes.c_bool
 CDLL.cim_read_rgba.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_byte)]
-# bool cim_write_rgb(void * im, uint8_t pixels[])
+# bool cim_write_rgb(void* im, uint8_t pixels[])
 CDLL.cim_write_rgb.restype = ctypes.c_bool
 CDLL.cim_write_rgb.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_byte)]
 
-# bool cface_read(void * cface, int32_t rect[4])
+# bool cface_read(void* cface, int32_t rect[4])
 CDLL.cface_read.restype = ctypes.c_bool
 CDLL.cface_read.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
-# bool cface_write(void * cface, int32_t rect[4])
+# bool cface_write(void* cface, int32_t rect[4])
 CDLL.cface_write.restype = ctypes.c_bool
 CDLL.cface_write.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
 
 # bool dl_setup()
 CDLL.dl_setup.restype = ctypes.c_bool
 CDLL.dl_setup.argtypes = None
-# bool dl_run_face(void * im, void * face)
+# bool dl_run_face(void* im, void* face)
 CDLL.dl_run_face.restype = ctypes.c_bool
 CDLL.dl_run_face.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-# bool dl_run_landmark(void * im, void * landmark)
+# bool dl_run_landmark(void* im, void* landmark)
 CDLL.dl_run_landmark.restype = ctypes.c_bool
 CDLL.dl_run_landmark.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-# bool dl_run_chip(void * im, void * chip)
+# bool dl_run_chip(void* im, void* chip)
 CDLL.dl_run_chip.restype = ctypes.c_bool
 CDLL.dl_run_chip.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+# bool dl_run_desc(void* im, void* face, void* landmark, void* chip, void* desc)
+CDLL.dl_run_desc.restype = ctypes.c_bool
+CDLL.dl_run_desc.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 
 from PIL import Image as PyImage
 from kivy.core.image import Image as KvImage
@@ -51,7 +54,7 @@ from kivy.uix.image import Image as UxImage
 class Cim(ctypes.Structure):
     _fields_ = [
         ("size", ctypes.c_int*2), 
-        ("colorfmt", ctypes.c_char_p),
+        # ("colorfmt", ctypes.c_char_p),
         ("pixels", ctypes.POINTER(ctypes.c_byte))]
 
 class Cface(ctypes.Structure):
@@ -60,12 +63,16 @@ class Cface(ctypes.Structure):
 class Clandmark(ctypes.Structure):
     _fields_ = [("landmark", ctypes.c_int*(68*2))]
 
+class Cdesc(ctypes.Structure):
+    _fields_ = [("desc", ctypes.c_int*128)]
+
 class Cmien:
     def __init__(self):
         self.im = Cim()
         self.face = Cface()
         self.landmark = Clandmark()
         self.chip = Cim()
+        self.desc = Cdesc()
 
     def cim_open(self, size, colorfmt):
         _size = (ctypes.c_int*2)()
@@ -108,17 +115,17 @@ class Cmien:
     def dl_run_face(self):
         return CDLL.dl_run_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
 
-    # def dl_show_face(self):
-    #     return CDLL.dl_show_face(ctypes.pointer(self.im), ctypes.pointer(self.face))
-
     def dl_run_landmark(self):
         return CDLL.dl_run_landmark(ctypes.pointer(self.im), ctypes.pointer(self.landmark))
     
     def dl_run_chip(self):
         return CDLL.dl_run_chip(ctypes.pointer(self.im), ctypes.pointer(self.chip))
 
+    def dl_run_desc(self):
+        return CDLL.dl_run_desc(ctypes.pointer(self.im), ctypes.pointer(self.face), ctypes.pointer(self.landmark), ctypes.pointer(self.chip), ctypes.pointer(self.desc))
+
 if __name__ == "__main__":
-    filename = "data/z2.png"
+    filename = "data/z3.jpg"
 
     im = UxImage(source=filename).texture
     size = (ctypes.c_int*2)()
@@ -137,9 +144,9 @@ if __name__ == "__main__":
     # _size[:] = size
     CDLL.cim_open(ctypes.pointer(mien.chip), (ctypes.c_int*2)(150, 150), b'rgb')
     
-    mien.dl_run_chip()
-
     # mien.dl_show_face()
+    # mien.dl_run_chip()
+    mien.dl_run_desc()
 
     # face = (ctypes.c_int*4)()
     # mien.cface_write(face)

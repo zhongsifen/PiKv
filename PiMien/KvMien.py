@@ -6,8 +6,11 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
 from kivy.uix.image import Image
 from kivy.uix.camera import Camera
+from kivy.uix.behaviors import ButtonBehavior 
 from kivy.graphics.texture import Texture
 from kivy.graphics import Line
 from kivy.clock import Clock
@@ -17,7 +20,7 @@ Config.set('graphics', 'height', '960')
 
 from PiMien import Mien
 
-class KvCam(Camera):
+class KvCam(ButtonBehavior, Camera):
     def get_size(self):
         return self.texture.size
 
@@ -36,8 +39,22 @@ class KvIm(Image):
     def show(self, pixels):
         self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
 
+class KvDlg(FloatLayout):
+    def load(self, dir, file):
+        pass
 
-class KvPreview(KvIm):
+    def cancel(self):
+        pass
+
+class KvCard(ButtonBehavior, Image):
+    def path(self):
+        dlg = Popup(title="path", content=KvDlg(), size_hint=(0.8, 0.8))
+        dlg.open()
+
+    def card(self):
+        self.source = 'card/card_2.png'
+
+class KvPreview(ButtonBehavior, KvIm):
     pass
 
 class KvChip(KvIm):
@@ -45,33 +62,21 @@ class KvChip(KvIm):
 
 class KvMien(AnchorLayout):
     def setup(self):
-        self.dt=(1.0/25)
+        self.dt=(1.0/10)
         self.cam=self.ids._camera
         self.prv=self.ids._preview
+        self.prv.setup(size=self.cam.get_size())
         self.chp=self.ids._chip
+        self.chp.setup(size=(150, 150))
     
-    def run(self, dt):
+    def preview(self):
         pixels = self.cam.get_pixels()
-        self.prv.show(pixels)
+        size = self.cam.get_size()
+        pixela = bytes(size[0]*size[1]*3)
 
-    def PiStart(self, instance):
-        self.setup()
-        self.prv.setup(size=self.cam.get_size(),colorfmt=self.cam.get_colorfmt())
-        Clock.schedule_interval(self.run, self.dt)
+        self.mien.run(pixels, pixela, pixelc)
 
-    def PiPause(self, button):
-        if button.state == "down":
-            self.ids._camera.play = False
-            button.text = 'Play'
-        else:
-            self.ids._camera.play = True
-            button.text = 'Pause'
-
-    def PiSetup(self, instance):
-        pass
-
-    def PiStop(self, instance):
-        pass
+        self.prv.show(pixela)
 
     def KvMienSetup(self):
         self.setup()

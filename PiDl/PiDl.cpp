@@ -36,7 +36,7 @@ bool dl_setup()
     return true;
 }
 
-bool dl_show_face(void *im, void *face)
+bool dl_show_face(void* im, void* face)
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     PiCim::Cface *cface = (PiCim::Cface *)face;
@@ -51,24 +51,20 @@ bool dl_show_face(void *im, void *face)
     return true;
 }
 
-bool dl_run_face(void *im, void *face)
+bool dl_run_face(void* im, void* face)
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     PiCim::Cface *cface = (PiCim::Cface *)face;
     bool ret = true;
     PiDl::tdl(*cim, PiDl::_dl_image);
-    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);
-    if (!ret)
-        return false;
-    ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);
-    if (!ret)
-        return false;
+    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);    if (!ret) return false;
+    ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);     if (!ret) return false;
     PiDl::fdl(PiDl::_dl_face, *cface);
 
     return true;
 }
 
-bool dl_run_landmark(void *im, void *landmark)
+bool dl_run_landmark(void* im, void* landmark)
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     PiCim::Clandmark *clandmark = (PiCim::Clandmark *)landmark;
@@ -78,11 +74,6 @@ bool dl_run_landmark(void *im, void *landmark)
     ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
     draw_rectangle(PiDl::_dl_image, PiDl::_dl_face, rgb_pixel(0xF0, 0x00, 0x00));
     ret = PiDl::dlShape(PiDl::_dl_gray, PiDl::_dl_face, PiDl::_dl_shape);   if (!ret) return false;
-    int n = PiDl::_dl_shape.num_parts();
-    for (int i = 0; i < n; i++)
-    {
-        draw_solid_circle(PiDl::_dl_image, PiDl::_dl_shape.part(i), 2, rgb_pixel(0xF0, 0x00, 0x00));
-    }
     PiDl::fdl(PiDl::_dl_shape, *clandmark);
     PiDl::fdl(PiDl::_dl_image, *cim);
 
@@ -104,6 +95,29 @@ bool dl_run_chip(void* im, void* chip)
     return true;
 }
 
+bool dl_run_desc(void* im, void* face, void* landmark, void* chip, void* desc)
+{
+    PiCim::Cim *cim = (PiCim::Cim *)im;
+    PiCim::Cface *cface = (PiCim::Cface *)face;
+    PiCim::Clandmark *clandmark = (PiCim::Clandmark *)landmark;
+    PiCim::Cim *cchip = (PiCim::Cim *)chip;
+    bool ret = true;
+    PiDl::tdl(*cim, PiDl::_dl_image);
+    ret = PiDl::dlGray(PiDl::_dl_image, PiDl::_dl_gray);  if (!ret) return false;
+    ret = PiDl::dlFace(PiDl::_dl_gray, PiDl::_dl_face);   if (!ret) return false;
+    ret = PiDl::dlShape(PiDl::_dl_gray, PiDl::_dl_face, PiDl::_dl_shape); if (!ret) return false;
+    ret = PiDl::dlChip(PiDl::_dl_image, PiDl::_dl_shape, PiDl::_dl_chip);  if (!ret) return false;
+    PiDl::fdl(PiDl::_dl_face, *cface);
+    PiDl::fdl(PiDl::_dl_shape, *clandmark);
+    PiDl::fdl(PiDl::_dl_chip, *cchip);
+
+    PiDl::show(PiDl::_dl_image, PiDl::_dl_face);
+    PiDl::show(PiDl::_dl_image, PiDl::_dl_shape);
+    PiDl::fdl(PiDl::_dl_image, *cim);
+
+    return true;
+}
+
 #if 0
 bool PiDl::runDesc(PiCim::Cim &frame, PiCV::Desc &desc)
 {
@@ -119,7 +133,7 @@ bool PiDl::runDesc(PiCim::Cim &frame, PiCV::Desc &desc)
     return true;
 }
 
-bool PiDl::runFeat(void *pPiDl::_dl_image, void *p_feat)
+bool PiDl::runFeat(void* pPiDl::_dl_image, void* p_feat)
 {
     PiCim::Cim *cv_image = (PiCim::Cim*)p_image;
     PiCV::Feat *cv_feat = (PiCV::Feat*)p_feat;
@@ -254,7 +268,7 @@ void PiDl::fdl(Image &image, PiCim::Cim &cim)
 {
     cim.size[0] = image.nc();
     cim.size[1] = image.nr();
-    cim.colorfmt = "rgb";
+    // cim.colorfmt = "rgb";
     int n = cim.size[0] * cim.size[1] * 3;
     cim.pixels = new uint8_t[n];
     uint8_t *p = (uint8_t *)&image(0, 0);
@@ -313,18 +327,21 @@ void PiDl::fdl(Shape &shape_dl, PiCim::Clandmark &landmark)
 //     const rectangle &rect,
 //     const pixel_type &val,
 //     unsigned int thickness = 1);
-// void PiDl::show_face(PiCim::Cim &cim, PiCim::Cface &cface)
-// {
-//     Image img;
-//     Face rect;
-//     rgb_pixel val(0x80, 0x80, 0x80);
-//     tdl(cim, img);
-//     tdl(cface, rect);
-//     draw_rectangle(img, rect, val);
-// }
+void PiDl::show(Image &image, Face &face)
+{
+    draw_rectangle(image, face, rgb_pixel(0xF0, 0x00, 0x00));
+}
 
 // void draw_solid_circle(
 //     image_type &img,
 //     const dpoint &center_point,
 //     double radius,
 //     const pixel_type &pixel);
+void PiDl::show(Image &image, Shape &shape)
+{
+    int n = PiDl::_dl_shape.num_parts();
+    for (int i = 0; i < n; i++)
+    {
+        draw_solid_circle(image, shape.part(i), 1, rgb_pixel(0xF0, 0x00, 0x00));
+    }
+}

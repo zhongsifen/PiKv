@@ -9,7 +9,7 @@
 //     Cface _cface;
 // }
 
-// void *cim_get_im()
+// void* cim_get_im()
 // {
 //     return &PiCim::_cim;
 // }
@@ -24,7 +24,7 @@ bool cim_open(void* im, int size[2], char *colorfmt)
     PiCim::Cim *cim = (PiCim::Cim*)im;
     cim->size[0] = size[0];
     cim->size[1] = size[1];
-    cim->colorfmt = colorfmt;
+    // cim->colorfmt = colorfmt;
     cim->pixels = new uint8_t[(size[0] * size[1]) * ((strcmp(colorfmt, "rgba") == 0) ? 4 : 3)];
 
     return true;
@@ -65,7 +65,7 @@ bool cim_read_rgb(void* im, uint8_t pixels[])
     return true;
 }
 
-bool cim_read_rgba(void *im, uint8_t pixels[])
+bool cim_read_rgba(void* im, uint8_t pixels[])
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     int l = cim->size[0] * cim->size[1];
@@ -82,7 +82,7 @@ bool cim_read_rgba(void *im, uint8_t pixels[])
     return true;
 }
 
-bool cim_write_rgb(void *im, uint8_t pixels[])
+bool cim_write_rgb(void* im, uint8_t pixels[])
 {
     PiCim::Cim *cim = (PiCim::Cim *)im;
     int l = cim->size[0] * cim->size[1];
@@ -110,7 +110,7 @@ bool cface_read(void* face, int rect[4])
     return true;
 }
 
-bool cface_write(void *face, int rect[4])
+bool cface_write(void* face, int rect[4])
 {
     PiCim::Cface *cface = (PiCim::Cface *)face;
     for (int i = 0; i < 4; i++)

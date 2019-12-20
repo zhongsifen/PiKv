@@ -3,7 +3,7 @@
 import sys
 sys.path.append('/Users/zhongsifen/Work/PiKv')
 from PiCim.PiCim import Cmien
-    
+
 class Mien:
     def __init__(self):
         self.mien = Cmien()
@@ -23,3 +23,7 @@ class Mien:
 
         self.mien.cim_write_rgb(pixela)
         self.mien.cchip_write(pixelc)
+
+
+if __name__ == "__main__":
+    pass

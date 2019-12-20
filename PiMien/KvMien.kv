@@ -11,6 +11,26 @@
     center_x: self.parent.center_x
     center_y: self.parent.center_y
 
+<KvDlg>:
+    size_hint: (0.6, 0.6)
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: _filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(_filechooser.path, _filechooser.selection)
+
 <KvMien>:
     AnchorLayout:
         anchor_x: 'left'
@@ -24,60 +44,66 @@
             ToolButton:
                 on_press: root.PiStart(*args)
                 ToolImage:
-                    source: 'icon/Play.png'
+                    source: 'icon/Play.ico'
             ToolButton:
                 on_press: root.PiPause(*args)
                 ToolImage:
-                    source: 'icon/Pause.png'
+                    source: 'icon/Pause.ico'
             ToolButton:
-                on_press: root.KvMienLoop(*args)
+                on_press: app.stop()
                 ToolImage:
-                    source: 'icon/Face.png'
+                    source: 'icon/Stop.ico'
     AnchorLayout:
         anchor_x: 'right'
         anchor_y: 'top'
-
         GridLayout:
             rows: 2
             cols: 2
             size_hint: None,None
             width: root.width - _toolbox.width
-            height: root.height - _menubar.height - _statusbar.height
+            height: root.height
             KvCam:
                 id: _camera
                 resolution: (640,480)
                 play: True
+                on_press: root.KvMienLoop(*args)
+            KvCard:
+                id: _card
+                source: "card/card_0.png"
+                on_press: self.path()
+                on_release: self.card()
             KvPreview:
                 id: _preview
             KvChip:
                 id: _chip
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'bottom'
-        BoxLayout:
-            id: _bar
-            orientation: 'vertical'
-            BoxLayout:
-                id: _menubar
-                size_hint: 1,None
-                height: 48
-                orientation: 'horizontal'
-                padding: 2
-                ToggleButton:
-                    text: 'Pause'
-                    on_press: root.PiPause(self)
-                Button:
-                    text: 'Setup'
-                    on_press: root.PiSetup(*args)
-                Button:
-                    text: 'Exit'
-                    on_press: app.stop()
-            BoxLayout:
-                id: _statusbar
-                size_hint: 1,None
-                height: 24
-                orientation: 'horizontal'
-                Label:
-                    text: 'Total: 1'
-                Label:
-                    text: "Started"
+    # AnchorLayout:
+    #     anchor_x: 'center'
+    #     anchor_y: 'bottom'
+    #     BoxLayout:
+    #         id: _bar
+    #         height: 48 + 24 
+    #         orientation: 'vertical'
+    #         BoxLayout:
+    #             id: _menubar
+    #             size_hint: 1,None
+    #             height: 48
+    #             orientation: 'horizontal'
+    #             padding: 2
+    #             ToggleButton:
+    #                 text: 'Pause'
+    #                 on_press: root.PiPause(self)
+    #             Button:
+    #                 text: 'Setup'
+    #                 on_press: root.PiSetup(*args)
+    #             Button:
+    #                 text: 'Exit'
+    #                 on_press: app.stop()
+    #         BoxLayout:
+    #             id: _statusbar
+    #             size_hint: 1,None
+    #             height: 24
+    #             orientation: 'horizontal'
+    #             Label:
+    #                 text: 'Total: 1'
+    #             Label:
+    #                 text: "Started"
