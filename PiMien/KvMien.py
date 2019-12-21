@@ -2,6 +2,9 @@
 
 import kivy
 kivy.require('1.7.0')
+import sys
+sys.path.append('/Users/zhongsifen/Work/PiKv')
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
@@ -18,7 +21,8 @@ from kivy.config import Config
 Config.set('graphics', 'width',  '960')
 Config.set('graphics', 'height', '960')
 
-from PiMien import Mien
+from PiCim.PiCim import Cmien
+# from PiMien.PiMien import Mien
 
 class KvCam(ButtonBehavior, Camera):
     def get_size(self):
@@ -65,40 +69,23 @@ class KvMien(AnchorLayout):
         self.dt=(1.0/10)
         self.cam=self.ids._camera
         self.prv=self.ids._preview
-        self.prv.setup(size=self.cam.get_size())
+        self.prv.setup(size=self.cam.get_size(), colorfmt='rgb')
         self.chp=self.ids._chip
         self.chp.setup(size=(150, 150))
+
+        self.mien = Cmien()
+        self.mien.cim_open(self.cam.get_size())
     
     def preview(self):
-        pixels = self.cam.get_pixels()
-        size = self.cam.get_size()
-        pixela = bytes(size[0]*size[1]*3)
-
-        self.mien.run(pixels, pixela, pixelc)
-
-        self.prv.show(pixela)
-
-    def KvMienSetup(self):
         self.setup()
-        self.prv.setup(size=self.cam.get_size())
-        self.chp.setup(size=(150, 150))
-        self.mien = Mien()
-        self.mien.setup(size=self.cam.get_size(), colorfmt=self.cam.get_colorfmt())
 
-    def KvMienStep(self, dt):
         pixels = self.cam.get_pixels()
-        size = self.cam.get_size()
+        self.mien.cim_read_rgba(pixels)
+
+        size = (640, 480)
         pixela = bytes(size[0]*size[1]*3)
-        pixelc = bytes(150*150*3)
-
-        self.mien.run(pixels, pixela, pixelc)
-
+        self.mien.cim_write_rgb(pixela)
         self.prv.show(pixela)
-        self.chp.show(pixelc)
-
-    def KvMienLoop(self, instance):
-        self.KvMienSetup()
-        Clock.schedule_interval(self.KvMienStep, self.dt)
 
 
 class KvMienApp(App):
