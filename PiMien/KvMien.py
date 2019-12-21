@@ -39,9 +39,10 @@ class KvIm(Image):
     def setup(self, size, colorfmt='rgb'):
         self.texture = Texture.create(size=size, colorfmt=colorfmt)
         self.texture.flip_vertical()
-    
-    def show(self, pixels):
-        self.texture.blit_buffer(pbuffer=pixels, size=self.texture.size, colorfmt=self.texture.colorfmt)
+        self.buffer = bytes(size[0]*size[1]*3)
+
+    def show(self):
+        self.texture.blit_buffer(pbuffer=self.buffer, size=self.texture.size, colorfmt=self.texture.colorfmt)
 
 class KvDlg(FloatLayout):
     def load(self, dir, file):
@@ -69,23 +70,23 @@ class KvMien(AnchorLayout):
         self.dt=(1.0/10)
         self.cam=self.ids._camera
         self.prv=self.ids._preview
-        self.prv.setup(size=self.cam.get_size(), colorfmt='rgb')
+        self.prv.setup(size=self.cam.get_size())
         self.chp=self.ids._chip
         self.chp.setup(size=(150, 150))
 
         self.mien = Cmien()
         self.mien.cim_open(self.cam.get_size())
-    
+   
+    def preview_step(self, dt):
+        self.mien.cim_read_rgba(self.cam.get_pixels())
+        self.mien.cim_write_rgb(self.prv.buffer)
+        self.prv.show()
+
     def preview(self):
         self.setup()
 
-        pixels = self.cam.get_pixels()
-        self.mien.cim_read_rgba(pixels)
+        Clock.schedule_interval(self.preview_step, self.dt)
 
-        size = (640, 480)
-        pixela = bytes(size[0]*size[1]*3)
-        self.mien.cim_write_rgb(pixela)
-        self.prv.show(pixela)
 
 
 class KvMienApp(App):
