@@ -1,18 +1,14 @@
 //
-//  dlib_anet.hpp
-//  MienDL
-//
-//  Created by SIFEN ZHONG on 12/10/2017.
-//  Copyright © 2017 ___ZHONGSIFEN___. All rights reserved.
+//  dl_anet.hpp
 //
 
-#ifndef dlib_anet_h
-#define dlib_anet_h
+#ifndef dl_anet_h
+#define dl_anet_h
 
 #include <dlib/dnn.h>
 using namespace dlib;
 
-namespace dlib_anet {
+namespace dl_anet {
 template <template <int,template<typename>class,int,typename> class block, int N, template<typename>class BN, typename SUBNET>
 using residual = add_prev1<block<N,BN,1,tag1<SUBNET>>>;
 
@@ -42,4 +38,4 @@ input_rgb_image_sized<150>
 >>>>>>>>>>>>;
 }
 
-#endif /* dlib_anet_h */
+#endif /* dl_anet_h */

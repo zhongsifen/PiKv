@@ -75,17 +75,21 @@ class KvMien(AnchorLayout):
         self.chp.setup(size=(150, 150))
 
         self.mien = Cmien()
+        self.mien.dl_setup()
         self.mien.cim_open(self.cam.get_size())
    
     def preview_step(self, dt):
         self.mien.cim_read_rgba(self.cam.get_pixels())
+        self.mien.dl_run_face()
         self.mien.cim_write_rgb(self.prv.buffer)
         self.prv.show()
 
     def preview(self):
         self.setup()
+        self.event = Clock.schedule_interval(self.preview_step, self.dt)
 
-        Clock.schedule_interval(self.preview_step, self.dt)
+    def chip(self):
+        self.event.cancel()
 
 
 

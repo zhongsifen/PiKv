@@ -125,7 +125,7 @@ class Cmien:
         return CDLL.dl_run_desc(ctypes.pointer(self.im), ctypes.pointer(self.face), ctypes.pointer(self.landmark), ctypes.pointer(self.chip), ctypes.pointer(self.desc))
 
 if __name__ == "__main__":
-    filename = "data/z3.jpg"
+    filename = "data/z2.png"
 
     im = UxImage(source=filename).texture
     size = (ctypes.c_int*2)()
@@ -142,11 +142,11 @@ if __name__ == "__main__":
     # mien.dl_run_landmark()
     # _size = (ctypes.c_int*2)()
     # _size[:] = size
-    CDLL.cim_open(ctypes.pointer(mien.chip), (ctypes.c_int*2)(150, 150), b'rgb')
+    # CDLL.cim_open(ctypes.pointer(mien.chip), (ctypes.c_int*2)(150, 150), b'rgb')
     
     # mien.dl_show_face()
     # mien.dl_run_chip()
-    mien.dl_run_desc()
+    mien.dl_run_face()
 
     # face = (ctypes.c_int*4)()
     # mien.cface_write(face)
@@ -155,9 +155,9 @@ if __name__ == "__main__":
     s = (ctypes.c_int*2)()
     # print(mien.chip.size[:])
     # print(mien.chip.pixels)
-    mien.cchip_get_size(s)
+    mien.cim_get_size(s)
     d = bytes(s[0]*s[1]*3)
-    mien.cchip_write(d)
+    mien.cim_write_rgb(d)
     pim = PyImage.frombytes('RGB', (s[0], s[1]), d)
     pim.show()
     # size_chip = (mien.chip.size[0], mien.chip.size[1])

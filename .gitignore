@@ -7,7 +7,7 @@ include/
 lib/
 res/
 .vscode/
-dl/
+model/
 opencv/build*
 dlib/
 build*/

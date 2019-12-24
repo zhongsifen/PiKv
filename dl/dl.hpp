@@ -1,21 +1,20 @@
 //
-//  PiDl.hpp
-//  PiDl
+//  dl.hpp
 //
 //  Created by SIFEN ZHONG on 4/10/2017.
 //  Copyright © 2017 ___ZHONGSIFEN___. All rights reserved.
 //
 
-#ifndef PiDl_hpp
-#define PiDl_hpp
+#ifndef dl_hpp
+#define dl_hpp
 
-#include "PiDlConfig.hpp"
-#include "dlib_anet.hpp"
+#include "dl_config.hpp"
+#include "dl_anet.hpp"
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_transforms.h>
 #include "PiCim/PiCim.hpp"
 
-namespace PiDl {
+namespace dl {
 	typedef dlib::matrix<dlib::rgb_pixel> Image;
 	typedef dlib::matrix<unsigned char> Gray;
 	typedef dlib::rectangle Face;
@@ -30,12 +29,15 @@ namespace PiDl {
 		Chip chip;
 		Desc desc;
 	} Feat;
-
-	// void fdl(Image & image_d, PiCim::Cim & image);
-	// void fdl(Gray &gray_d, PiCV::Gray &gray);
-	// void fdl(Shape &shape_dl, PiCV::Landmark &landmark);
-	// void fdl(Desc &desc_dl, PiCV::Desc &desc);
 	
+    bool dlInit();
+    bool dlGray(Image & image, Gray & gray);
+    bool dlFace(Gray & gray, Face & face);
+    bool dlShape(Gray &gray, Face &face, Shape &shape);
+    bool dlChip(Image &image, Shape &shape, Chip &chip);
+    bool dlDesc(Chip &chip, Desc &desc);
+    
+    bool dlFeat(Image &image, Feat &feat);
 	void fdl(Image &image, PiCim::Cim &cim);
 	void tdl(PiCim::Cim &cim, Image &image);
 	void fdl(Face &face, PiCim::Cface &cface);
@@ -44,16 +46,6 @@ namespace PiDl {
 
 	void show(Image &image, Face &face);
 	void show(Image &image, Shape &shape);
-} // namespace PiDl
+} // namespace dl
 
-extern "C"
-{
-	bool dl_setup();
-	bool dl_run_face(void* im, void* face);
-	bool dl_show_face(void* im, void* face);
-	bool dl_run_landmark(void* im, void* landmark);
-	bool dl_run_chip(void* im, void* chip);
-	bool dl_run_desc(void* im, void* face, void* landmark, void* chip, void* desc);
-}
-
-#endif /* PiDl_hpp */
+#endif /* dl_hpp */

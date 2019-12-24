@@ -2,7 +2,7 @@ add_library(PiMien SHARED
 	PiMien.cpp
 	PiMien.hpp
 	../PiCim/PiCim.cpp
-	../PiDl/PiDl.cpp
+	../dl/dl.cpp
 )
 set_target_properties(PiMien PROPERTIES
     SUFFIX .so
