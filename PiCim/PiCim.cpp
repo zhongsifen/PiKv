@@ -3,22 +3,6 @@
 #include "PiCim.hpp"
 #include <cstring>
 
-// namespace PiCim
-// {
-//     Cim _cim;
-//     Cface _cface;
-// }
-
-// void* cim_get_im()
-// {
-//     return &PiCim::_cim;
-// }
-
-// void* im_get_face()
-// {
-//     return &PiCim::_cface;
-// }
-
 bool cim_open(void* im, int size[2])
 {
     PiCim::Cim *cim = (PiCim::Cim*)im;

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace dl {
+namespace Dl {
 	const std::string _M("dl/model/");
 
 	const std::string _DAT_SP(_M + "shape_predictor_68_face_landmarks.dat");

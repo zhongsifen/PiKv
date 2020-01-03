@@ -1,12 +1,19 @@
 // PiMien.hpp
+
 #include <cstdint>
+#include <string>
 
 extern "C"
 {
-	bool dl_setup();
-	bool dl_run_face(void* im, void* face);
-	bool dl_show_face(void* im, void* face);
-	bool dl_run_landmark(void* im, void* landmark);
-	bool dl_run_chip(void* im, void* chip);
-	bool dl_run_desc(void* im, void* face, void* landmark, void* chip, void* desc);
+	bool cim_setup(void* im, int size[2]);
+    bool cim_close(void* im);
+    bool cim_get_size(void* im, int size[2]);
+    bool cim_read_rgb(void* im, uint8_t pixels[]);
+    bool cim_read_rgba(void* im, uint8_t pixels[]);
+    bool cim_write_rgb(void* im, uint8_t pixels[]);
+
+    bool mien_init();
+	bool mien_setup(void* im, void* view);
+	bool mien_run_face(void* view);
+	bool mien_run_chip(void* view);
 }

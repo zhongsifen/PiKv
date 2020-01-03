@@ -1,132 +1,191 @@
 // PiMien.cpp
 
 #include "PiMien.hpp"
-#include "PiCim/PiCim.hpp"
 #include "dl/dl.hpp"
-#include <cmath>
+// #include <cmath>
 
-namespace dl
-{
-    Image _dl_image;
-    Gray _dl_gray;
-    Face _dl_face;
-    Shape _dl_shape;
-    Chip _dl_chip;
-    Desc _dl_desc;
+namespace Mien {
+    Dl::Proc _p;
 
-    enum
+    typedef struct
     {
-        NONE,
-        INIT,
-        FACE,
-        LANDMARK,
-        CHIP,
-    } _stage;
+        int32_t size[2];
+        // const char *colorfmt;
+        uint8_t *pixels;
+    } Cim;
 
-} // namespace dl
+	void fdl(Dl::Image &image, Cim &cim);
+	void tdl(Cim &cim, Dl::Image &image);
+	// void fdl(Dl::Face &face, PiCim::Cface &cface);
+	// void tdl(PiCim::Cface &cface, Dl::Face &face);
+	// void fdl(Dl::Shape &shape_dl, PiCim::Clandmark &landmark);
+}
 
-bool dl_setup()
+void Mien::fdl(Dl::Image &image, Mien::Cim &cim)
 {
-    dl::dlInit();
+    cim.size[0] = image.nc();
+    cim.size[1] = image.nr();
+    int n = cim.size[0] * cim.size[1] * 3;
+    uint8_t *p = (uint8_t *)&image(0, 0);
+    for (int k = 0; k < n; k++)
+    {
+        cim.pixels[k] = p[k];
+    }
+}
+
+void Mien::tdl(Mien::Cim &cim, Dl::Image &image)
+{
+    image = Dl::Image(cim.size[1], cim.size[0]);
+    uint8_t* p = (uint8_t*)&image(0, 0);
+    int n = cim.size[0]*cim.size[1]*3;
+    for (int k=0; k<n; k++) {
+        p[k] = cim.pixels[k];
+    }
+}
+
+#if 0
+void fdl(Face &face, PiCim::Cface &cface)
+{
+    cface.rect[0] = (int)face.left();
+    cface.rect[1] = (int)face.top();
+    cface.rect[2] = (int)face.right();
+    cface.rect[3] = (int)face.bottom();
+}
+
+void tdl(PiCim::Cface &cface, Face &face)
+{
+    face = dlib::rectangle(
+        cface.rect[0],
+        cface.rect[1],
+        cface.rect[2],
+        cface.rect[3]);
+}
+
+void fdl(Shape &shape_dl, PiCim::Clandmark &landmark)
+{
+    int n = shape_dl.num_parts();
+    int k = 0;
+    for (int i = 0; i < n; i++)
+    {
+        landmark.shape[k++] = shape_dl.part(i).x();
+        landmark.shape[k++] = shape_dl.part(i).y();
+    }
+}
+#endif
+
+bool cim_setup(void* im, int size[2])
+{
+    Mien::Cim *cim = (Mien::Cim*)im;
+    cim->size[0] = size[0];
+    cim->size[1] = size[1];
+    cim->pixels = new uint8_t[(size[0] * size[1]) * 3];
 
     return true;
 }
 
-bool dl_do_face(void* im)
+bool cim_close(void* im)
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-    dl::tdl(*cim, dl::_dl_image);
-
-    bool ret = true;
-    ret = dl::dlGray(dl::_dl_image, dl::_dl_gray);    if (!ret) return false;
-    ret = dl::dlFace(dl::_dl_gray, dl::_dl_face);     if (!ret) return false;
-
-    dl::show(dl::_dl_image, dl::_dl_face);
-    dl::fdl(dl::_dl_image, *cim);
+    Mien::Cim *cim = (Mien::Cim *)im;
+    delete[] cim->pixels;
+    cim->size[0] = 0;
+    cim->size[1] = 0;
+    cim->pixels = nullptr;
 
     return true;
 }
 
-bool dl_do_landmark(void* im)
+bool cim_get_size(void* im, int size[2])
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-
-    bool ret = true;
-    ret = dl::dlShape(dl::_dl_gray, dl::_dl_face, dl::_dl_shape);   if (!ret) return false;
-
-    dl::show(dl::_dl_image, dl::_dl_shape);
-    dl::fdl(dl::_dl_image, *cim);
+    Mien::Cim *cim = (Mien::Cim *)im;
+    size[0] = cim->size[0];
+    size[1] = cim->size[1];
 
     return true;
 }
 
-
-bool dl_run_face(void* im, void* face)
+bool cim_read_rgb(void* im, uint8_t pixels[])
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-    PiCim::Cface *cface = (PiCim::Cface *)face;
-    bool ret = true;
-    dl::tdl(*cim, dl::_dl_image);
-    ret = dl::dlGray(dl::_dl_image, dl::_dl_gray);    if (!ret) return false;
-    ret = dl::dlFace(dl::_dl_gray, dl::_dl_face);     if (!ret) return false;
-    dl::fdl(dl::_dl_face, *cface);
-    draw_rectangle(dl::_dl_image, dl::_dl_face, rgb_pixel(0xF0, 0x00, 0x00));
-    dl::fdl(dl::_dl_image, *cim);
+    Mien::Cim *cim = (Mien::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
+    int i=0, j=0;
+    for (int k=0; k<l; k++) {
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+    }
 
     return true;
 }
 
-bool dl_run_landmark(void* im, void* landmark)
+bool cim_read_rgba(void* im, uint8_t pixels[])
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-    PiCim::Clandmark *clandmark = (PiCim::Clandmark *)landmark;
-    bool ret = true;
-    dl::tdl(*cim, dl::_dl_image);
-    ret = dl::dlGray(dl::_dl_image, dl::_dl_gray);  if (!ret) return false;
-    ret = dl::dlFace(dl::_dl_gray, dl::_dl_face);   if (!ret) return false;
-    draw_rectangle(dl::_dl_image, dl::_dl_face, rgb_pixel(0xF0, 0x00, 0x00));
-    ret = dl::dlShape(dl::_dl_gray, dl::_dl_face, dl::_dl_shape);   if (!ret) return false;
-    dl::fdl(dl::_dl_shape, *clandmark);
-    dl::fdl(dl::_dl_image, *cim);
+    Mien::Cim *cim = (Mien::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
+    int i = 0, j = 0;
+    for (int k = 0; k < l; k++)
+    {
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        pxs[i++] = pixels[j++];
+        j++;
+    }
 
     return true;
 }
 
-bool dl_run_chip(void* im, void* chip)
+bool cim_write_rgb(void* im, uint8_t pixels[])
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-    PiCim::Cim *cchip = (PiCim::Cim *)chip;
-    bool ret = true;
-    dl::tdl(*cim, dl::_dl_image);
-    ret = dl::dlGray(dl::_dl_image, dl::_dl_gray);  if (!ret) return false;
-    ret = dl::dlFace(dl::_dl_gray, dl::_dl_face);   if (!ret) return false;
-    ret = dl::dlShape(dl::_dl_gray, dl::_dl_face, dl::_dl_shape); if (!ret) return false;
-    ret = dl::dlChip(dl::_dl_image, dl::_dl_shape, dl::_dl_chip);  if (!ret) return false;
-    dl::fdl(dl::_dl_chip, *cchip);
+    Mien::Cim *cim = (Mien::Cim *)im;
+    int l = cim->size[0] * cim->size[1];
+    uint8_t *pxs = cim->pixels;
+    int i = 0, j = 0;
+    for (int k = 0; k < l; k++)
+    {
+        pixels[j++] = pxs[i++];
+        pixels[j++] = pxs[i++];
+        pixels[j++] = pxs[i++];
+    }
 
     return true;
 }
 
-bool dl_run_desc(void* im, void* face, void* landmark, void* chip, void* desc)
+bool mien_init()
 {
-    PiCim::Cim *cim = (PiCim::Cim *)im;
-    PiCim::Cface *cface = (PiCim::Cface *)face;
-    PiCim::Clandmark *clandmark = (PiCim::Clandmark *)landmark;
-    PiCim::Cim *cchip = (PiCim::Cim *)chip;
     bool ret = true;
-    dl::tdl(*cim, dl::_dl_image);
-    ret = dl::dlGray(dl::_dl_image, dl::_dl_gray);  if (!ret) return false;
-    ret = dl::dlFace(dl::_dl_gray, dl::_dl_face);   if (!ret) return false;
-    ret = dl::dlShape(dl::_dl_gray, dl::_dl_face, dl::_dl_shape); if (!ret) return false;
-    ret = dl::dlChip(dl::_dl_image, dl::_dl_shape, dl::_dl_chip);  if (!ret) return false;
-    ret = dl::dlDesc(dl::_dl_chip, dl::_dl_desc);  if (!ret) return false;
-    dl::fdl(dl::_dl_face, *cface);
-    dl::fdl(dl::_dl_shape, *clandmark);
-    dl::fdl(dl::_dl_chip, *cchip);
+    ret = Dl::init(Mien::_p);   if (!ret) return false;
+    printf("PiMien.cpp: mien_init()\n");
 
-    dl::show(dl::_dl_image, dl::_dl_face);
-    dl::show(dl::_dl_image, dl::_dl_shape);
-    dl::fdl(dl::_dl_image, *cim);
+    return true;
+}
+
+bool mien_setup(void* im, void* view)
+{
+    printf("PiMien.cpp: mien_setup()\n");
+    bool ret = true;
+    Mien::Cim *cim = (Mien::Cim *)im;
+    Mien::Cim *cview = (Mien::Cim *)view;
+    Mien::tdl(*cim, Mien::_p.image);
+    // Mien::tdl(*cim, Mien::_p.view);
+    // ret = Dl::setup(Mien::_p, Mien::_p.image);    if (!ret) return false;
+    Mien::fdl(Mien::_p.image, *cview);
+
+    return true;
+}
+
+bool mien_run_face(void* view)
+{
+    Mien::Cim *cview = (Mien::Cim *)view;
+    bool ret = true;
+    ret = Dl::runFace(Mien::_p);    if (!ret) return false;
+    Mien::fdl(Mien::_p.view, *cview);
+
+    return true;
+}
+
+bool mien_run_chip(void* view)
+{
 
     return true;
 }

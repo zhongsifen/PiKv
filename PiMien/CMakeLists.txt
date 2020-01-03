@@ -1,8 +1,6 @@
 add_library(PiMien SHARED
 	PiMien.cpp
 	PiMien.hpp
-	../PiCim/PiCim.cpp
-	../dl/dl.cpp
 )
 set_target_properties(PiMien PROPERTIES
     SUFFIX .so
@@ -14,6 +12,7 @@ target_include_directories(PiMien PUBLIC
 )
 
 target_link_libraries(PiMien LINK_PUBLIC
+	dl
 	${DLIB_DIR}/lib/libdlib.a
 	libblas.dylib
 	liblapack.dylib

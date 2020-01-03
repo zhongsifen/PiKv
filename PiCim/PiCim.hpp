@@ -31,9 +31,9 @@ namespace PiCim {
 }
 
 
-extern "C"
+extern "C" 
 {
-    bool cim_open(void* im, int size[2]);
+   bool cim_open(void* im, int size[2]);
     bool cim_close(void* im);
     bool cim_get_size(void* im, int size[2]);
     bool cim_read_rgb(void* im, uint8_t pixels[]);
