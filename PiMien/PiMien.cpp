@@ -155,20 +155,17 @@ bool mien_init()
 {
     bool ret = true;
     ret = Dl::init(Mien::_p);   if (!ret) return false;
-    printf("PiMien.cpp: mien_init()\n");
 
     return true;
 }
 
 bool mien_setup(void* im, void* view)
 {
-    printf("PiMien.cpp: mien_setup()\n");
     bool ret = true;
     Mien::Cim *cim = (Mien::Cim *)im;
     Mien::Cim *cview = (Mien::Cim *)view;
     Mien::tdl(*cim, Mien::_p.image);
-    // Mien::tdl(*cim, Mien::_p.view);
-    // ret = Dl::setup(Mien::_p, Mien::_p.image);    if (!ret) return false;
+    ret = Dl::setup(Mien::_p, Mien::_p.image);    if (!ret) return false;
     Mien::fdl(Mien::_p.image, *cview);
 
     return true;
@@ -184,8 +181,15 @@ bool mien_run_face(void* view)
     return true;
 }
 
-bool mien_run_chip(void* view)
+bool mien_run_chip(void* chip, void* view)
 {
+    Mien::Cim *cchip = (Mien::Cim *)chip;
+    Mien::Cim *cview = (Mien::Cim *)view;
+    bool ret = true;
+    ret = Dl::runShape(Mien::_p);    if (!ret) return false;
+    ret = Dl::runChip(Mien::_p);    if (!ret) return false;
+    Mien::fdl(Mien::_p.chip, *cchip);
+    Mien::fdl(Mien::_p.view, *cview);
 
     return true;
 }

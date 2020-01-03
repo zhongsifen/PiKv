@@ -107,7 +107,7 @@ void Dl::showShape(Image &view, Shape &shape)
     int n = shape.num_parts();
     for (int i = 0; i < n; i++)
     {
-        draw_solid_circle(view, shape.part(i), 1, rgb_pixel(0xF0, 0x00, 0x00));
+        draw_solid_circle(view, shape.part(i), 2, rgb_pixel(0xF0, 0x00, 0x00));
     }
 }
 
@@ -121,7 +121,6 @@ bool Dl::init(Proc& p)
 
 bool Dl::setup(Proc& p, Image& image)
 {
-    printf("Dl::setup stage: %d, %d\n", p.stage, Dl_INIT);
     assert(p.stage >= Dl_INIT);
     p.image = image;
     p.view = p.image;

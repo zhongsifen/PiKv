@@ -78,18 +78,19 @@ class Cmien(ctypes.Structure):
         CDLL.mien_init()
 
 
-    def setup(self, size):
-        self.im.setup(size)
-        self.view.setup(size)
-        self.chip.setup((150, 150))
+    def setup_size(self, size_im, size_chip=(150, 150)):
+        self.im.setup(size_im)
+        self.view.setup(size_im)
+        self.chip.setup(size_chip)
 
-        CDLL.mien_setup(ctypes.pointer(self.im), ctypes.pointer(self.view))
-
-    def reset(self):
+    def setup(self):
         CDLL.mien_setup(ctypes.pointer(self.im), ctypes.pointer(self.view))
 
     def run_face(self):
-        CDLL.mien_run_face(self.view)
+        CDLL.mien_run_face(ctypes.pointer(self.view))
+
+    def run_chip(self):
+        CDLL.mien_run_chip(ctypes.pointer(self.chip), ctypes.pointer(self.view))
 
 
 if __name__ == "__main__":
@@ -101,16 +102,21 @@ if __name__ == "__main__":
     size[1] = im.size[1]
 
     mien = Cmien()
-    mien.setup(size)
+    mien.setup_size(size)
     mien.im.read_rgba(im.pixels)
-    mien.reset()
-    # mien.run_face()
+    mien.setup()
+    mien.run_face()
+    mien.run_chip()
     s = (ctypes.c_int*2)()
     mien.view.get_size(s)
     d = bytes(s[0]*s[1]*3)
     mien.view.write_rgb(d)
     pim = PyImage.frombytes('RGB', (s[0], s[1]), d)
     pim.show()
+    chip = bytes(150*150*3)
+    mien.chip.write_rgb(chip)
+    t = PyImage.frombytes('RGB', (150, 150), chip)
+    t.show()
     mien.im.close()
 
     print(filename)

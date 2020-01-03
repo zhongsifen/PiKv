@@ -15,5 +15,5 @@ extern "C"
     bool mien_init();
 	bool mien_setup(void* im, void* view);
 	bool mien_run_face(void* view);
-	bool mien_run_chip(void* view);
+	bool mien_run_chip(void* chip, void* view);
 }
