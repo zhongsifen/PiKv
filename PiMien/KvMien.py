@@ -21,8 +21,7 @@ from kivy.config import Config
 Config.set('graphics', 'width',  '960')
 Config.set('graphics', 'height', '960')
 
-from PiCim.PiCim import Cmien
-# from PiMien.PiMien import Mien
+from PiMien import Cmien
 
 class KvCam(ButtonBehavior, Camera):
     def get_size(self):
@@ -73,15 +72,14 @@ class KvMien(AnchorLayout):
         self.prv.setup(size=self.cam.get_size())
         self.chp=self.ids._chip
         self.chp.setup(size=(150, 150))
-
         self.mien = Cmien()
-        self.mien.dl_setup()
-        self.mien.cim_open(self.cam.get_size())
+        self.mien.setup_size(size_im=self.cam.get_size())
    
     def preview_step(self, dt):
-        self.mien.cim_read_rgba(self.cam.get_pixels())
-        self.mien.dl_run_face()
-        self.mien.cim_write_rgb(self.prv.buffer)
+        self.mien.im.read_rgba(self.cam.get_pixels())
+        self.mien.setup()
+        self.mien.run_face()
+        self.mien.view.write_rgb(self.prv.buffer)
         self.prv.show()
 
     def preview(self):
@@ -90,7 +88,11 @@ class KvMien(AnchorLayout):
 
     def chip(self):
         self.event.cancel()
-
+        self.mien.run_chip()
+        self.mien.chip.write_rgb(self.chp.buffer)
+        self.chp.show()
+        self.mien.view.write_rgb(self.prv.buffer)
+        self.prv.show()
 
 
 class KvMienApp(App):
