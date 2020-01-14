@@ -127,7 +127,7 @@ class Cmien:
         fdesc.close()
         self.desc.read(desc)
 
-if __name__ == "abcd":
+if __name__ == "__main__":
     filename = "data/z2.png"
 
     im = UxImage(source=filename).texture
@@ -152,9 +152,8 @@ if __name__ == "abcd":
     t = PyImage.frombytes('RGB', (150, 150), chip)
     t.show()
 
-if __name__ == "__main__":
-    mien = Cmien()
-    mien.load_desc('data/', 'p_1.desc')
-    desc = (ctypes.c_float*128)()
-    mien.desc.write(desc)
-    mien.save_desc('data/', 'p_2.desc')
+    # mien = Cmien()
+    # mien.load_desc('data/', 'p_2.desc')
+    # desc = (ctypes.c_float*128)()
+    # mien.desc.write(desc)
+    # mien.save_desc('data/', 'p_3.desc')

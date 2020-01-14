@@ -66,6 +66,9 @@ namespace Dl {
     
 	void showFace(Image &view, Face &face);
 	void showShape(Image &view, Shape &shape);
+
+	bool dlFaceList(Gray & gray, std::vector<Face> & facelist);
+
 } // namespace Dl
 
 #endif /* dl_hpp */

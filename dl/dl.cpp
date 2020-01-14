@@ -37,6 +37,21 @@ bool Dl::dlGray(Image & image, Gray & gray)
     return true;
 }
 
+bool Dl::dlFaceList(Gray & gray, std::vector<Face> & facelist)
+{
+    std::vector<std::pair<double, dlib::rectangle>> dets;
+    _fd(gray, dets);
+
+    int n = (int)dets.size();   if (n < 1) return false;
+    facelist.resize(n);
+    for (int k = 1; k < n; k++)
+    {
+        facelist[k] = dets[k].second;
+    }
+
+    return true;
+}
+
 bool Dl::dlFace(Gray & gray, Face & face)
 {
     std::vector<std::pair<double, dlib::rectangle>> dets;
