@@ -12,8 +12,12 @@ extern "C"
     bool cim_read_rgba(void* im, uint8_t pixels[]);
     bool cim_write_rgb(void* im, uint8_t pixels[]);
 
+    bool cdesc_write(void* desc, float d[]);
+    bool cdesc_read(void* desc, float d[]);
+
     bool mien_init();
 	bool mien_setup(void* im, void* view);
 	bool mien_run_face(void* view);
 	bool mien_run_chip(void* chip, void* view);
+    bool mien_run(void* desc, void* chip, void* view);
 }

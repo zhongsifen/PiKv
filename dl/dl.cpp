@@ -176,3 +176,30 @@ bool Dl::runDesc(Proc& p)
 
     return true;
 }
+
+
+#if 0
+bool Mien58::run(cv::Mat &img, int& id) {
+	dlib::matrix<rgb_pixel> chip;
+	dlib::matrix<float, 0, 1> descr;
+	bool ret = _mien.descr(img, chip, descr);	if (!ret) return false;
+	double score = 100;
+	int index = id = -1;
+	int n = (int)_descrs.size();
+	for (int i=0; i<n; ++i) {
+		double s = dlib::length(descr - _descrs[i]);
+		if (s < score) {
+			score = s;
+			index = i;
+		}
+	}
+	if (score > 0.6) return false;
+	id = index;
+	dlib::cv_image<bgr_pixel> cvimg(img);
+	dlib::image_window im(cvimg);
+	dlib::image_window ch(_chips[id]);
+	dlib::sleep(1000);
+	
+	return true;
+}
+#endif

@@ -10,12 +10,17 @@ namespace Mien {
     typedef struct
     {
         int32_t size[2];
-        // const char *colorfmt;
         uint8_t *pixels;
     } Cim;
 
+    typedef struct
+    {
+        float desc[128];
+    } Cdesc;
+
 	void fdl(Dl::Image &image, Cim &cim);
 	void tdl(Cim &cim, Dl::Image &image);
+    void fdl(Dl::Desc &desc, Cdesc &cdesc);
 	// void fdl(Dl::Face &face, PiCim::Cface &cface);
 	// void tdl(PiCim::Cface &cface, Dl::Face &face);
 	// void fdl(Dl::Shape &shape_dl, PiCim::Clandmark &landmark);
@@ -40,6 +45,13 @@ void Mien::tdl(Mien::Cim &cim, Dl::Image &image)
     int n = cim.size[0]*cim.size[1]*3;
     for (int k=0; k<n; k++) {
         p[k] = cim.pixels[k];
+    }
+}
+
+void Mien::fdl(Dl::Desc &desc, Mien::Cdesc &cdesc)
+{
+    for (int k=0; k<128; k++) {
+        cdesc.desc[k] = desc(k);
     }
 }
 
@@ -151,6 +163,28 @@ bool cim_write_rgb(void* im, uint8_t pixels[])
     return true;
 }
 
+bool cdesc_write(void* desc, float d[])
+{
+    Mien::Cdesc *cdesc = (Mien::Cdesc *)desc;
+    for (int k = 0; k < 128; k++)
+    {
+        d[k] = cdesc->desc[k];
+    }
+
+    return true;
+}
+
+bool cdesc_read(void* desc, float d[])
+{
+    Mien::Cdesc *cdesc = (Mien::Cdesc *)desc;
+    for (int k = 0; k < 128; k++)
+    {
+        cdesc->desc[k] = d[k];
+    }
+
+    return true;
+}
+
 bool mien_init()
 {
     bool ret = true;
@@ -186,8 +220,32 @@ bool mien_run_chip(void* chip, void* view)
     Mien::Cim *cchip = (Mien::Cim *)chip;
     Mien::Cim *cview = (Mien::Cim *)view;
     bool ret = true;
-    ret = Dl::runShape(Mien::_p);    if (!ret) return false;
+    ret = Dl::runShape(Mien::_p);   if (!ret) return false;
     ret = Dl::runChip(Mien::_p);    if (!ret) return false;
+    Mien::fdl(Mien::_p.chip, *cchip);
+    Mien::fdl(Mien::_p.view, *cview);
+
+    return true;
+}
+
+bool mien_run_desc()
+{
+    bool ret = true;
+    ret = Dl::runDesc(Mien::_p);    if (!ret) return false;
+
+    return true;
+}
+
+bool mien_run(void* desc, void* chip, void* view)
+{
+    Mien::Cdesc *cdesc = (Mien::Cdesc *)desc;
+    Mien::Cim *cchip = (Mien::Cim *)chip;
+    Mien::Cim *cview = (Mien::Cim *)view;
+    bool ret = true;
+    ret = Dl::runShape(Mien::_p);   if (!ret) return false;
+    ret = Dl::runChip(Mien::_p);    if (!ret) return false;
+    ret = Dl::runDesc(Mien::_p);    if (!ret) return false;
+    Mien::fdl(Mien::_p.desc, *cdesc);
     Mien::fdl(Mien::_p.chip, *cchip);
     Mien::fdl(Mien::_p.view, *cview);
 

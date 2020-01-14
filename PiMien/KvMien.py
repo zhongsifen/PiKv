@@ -72,6 +72,8 @@ class KvMien(AnchorLayout):
         self.prv.setup(size=self.cam.get_size())
         self.chp=self.ids._chip
         self.chp.setup(size=(150, 150))
+        self.status=self.ids._status
+        self.msg=self.ids._msg
         self.mien = Cmien()
         self.mien.setup_size(size_im=self.cam.get_size())
    
@@ -93,6 +95,7 @@ class KvMien(AnchorLayout):
         self.chp.show()
         self.mien.view.write_rgb(self.prv.buffer)
         self.prv.show()
+        self.msg.text = 'Hello %d' % (4+2)
 
 
 class KvMienApp(App):

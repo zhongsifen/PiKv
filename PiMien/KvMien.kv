@@ -61,7 +61,7 @@
             cols: 2
             size_hint: None,None
             width: root.width - _toolbox.width
-            height: root.height
+            height: root.height - _statusbar.height
             KvCam:
                 id: _camera
                 resolution: (640,480)
@@ -77,34 +77,21 @@
                 on_press: root.chip()
             KvChip:
                 id: _chip
-    # AnchorLayout:
-    #     anchor_x: 'center'
-    #     anchor_y: 'bottom'
-    #     BoxLayout:
-    #         id: _bar
-    #         height: 48 + 24 
-    #         orientation: 'vertical'
-    #         BoxLayout:
-    #             id: _menubar
-    #             size_hint: 1,None
-    #             height: 48
-    #             orientation: 'horizontal'
-    #             padding: 2
-    #             ToggleButton:
-    #                 text: 'Pause'
-    #                 on_press: root.PiPause(self)
-    #             Button:
-    #                 text: 'Setup'
-    #                 on_press: root.PiSetup(*args)
-    #             Button:
-    #                 text: 'Exit'
-    #                 on_press: app.stop()
-    #         BoxLayout:
-    #             id: _statusbar
-    #             size_hint: 1,None
-    #             height: 24
-    #             orientation: 'horizontal'
-    #             Label:
-    #                 text: 'Total: 1'
-    #             Label:
-    #                 text: "Started"
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        BoxLayout:
+            id: _bar
+            height: 24 
+            orientation: 'vertical'
+            BoxLayout:
+                id: _statusbar
+                size_hint: 1,None
+                height: 48
+                orientation: 'horizontal'
+                Label:
+                    id: _status
+                    text: 'pass'
+                Label:
+                    id: _msg
+                    text: 'Score: 0'
